@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { ref, onMounted } from 'vue';
+import { useRouter } from 'vue-router';
 import { useColorMode } from '@vueuse/core';
 // Shadcn-Vue Components
 import {
@@ -30,6 +31,8 @@ import {Separator} from "@/components/ui/separator";
 // Icons from lucide
 import {Search, Map, House, TriangleAlert} from 'lucide-vue-next';
 
+const router = useRouter();
+const pageName = ref('');
 const search = ref('');
 
 onMounted(() => {
@@ -41,7 +44,14 @@ onMounted(() => {
   } else {
     colorMode.value = 'auto';
   }
+
+  routeTo('/map')
 });
+
+async function routeTo(link: string) {
+  await router.push(link);
+  pageName.value = router.currentRoute.value.name;
+}
 </script>
 
 <template>
@@ -71,15 +81,15 @@ onMounted(() => {
         <SidebarGroup>
           <SidebarMenu>
             <SidebarMenuItem>
-              <SidebarMenuButton>
+              <SidebarMenuButton @click="routeTo('/stations')">
                 <House/>
                 <span>Stations</span>
               </SidebarMenuButton>
-              <SidebarMenuButton>
+              <SidebarMenuButton @click="routeTo('/map')">
                 <Map/>
                 <span>Map</span>
               </SidebarMenuButton>
-              <SidebarMenuButton>
+              <SidebarMenuButton @click="routeTo('/disruptions')">
                 <TriangleAlert/>
                 <span>Disruptions</span>
               </SidebarMenuButton>
@@ -105,12 +115,13 @@ onMounted(() => {
             <BreadcrumbSeparator class="hidden md:block"/>
             <BreadcrumbItem class="hidden md:block">
               <BreadcrumbPage>
-                Live Map
+                {{ pageName }}
               </BreadcrumbPage>
             </BreadcrumbItem>
           </BreadcrumbList>
         </Breadcrumb>
       </header>
+      <RouterView />
     </SidebarInset>
   </SidebarProvider>
 </template>
