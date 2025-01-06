@@ -4,12 +4,12 @@ import {onMounted, ref} from 'vue';
 import {useColorMode} from "@vueuse/core";
 
 const colorMode = useColorMode();
-const isDark = true;
+const isDark = colorMode.value === 'dark';
 
 onMounted(() => {
   let map = leaflet.map("map", {
-    center: [60.199, 24.935],
-    zoom: 11,
+    center: [59.32783829091436, 18.057077874833766],
+    zoom: 12,
     inertia: true,
     zoomAnimation: true,
   });
