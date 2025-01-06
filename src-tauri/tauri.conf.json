@@ -12,9 +12,9 @@
   "app": {
     "windows": [
       {
-        "title": "railtrack",
-        "width": 800,
-        "height": 600
+        "title": "Railtrack",
+        "width": 1000,
+        "height": 700
       }
     ],
     "security": {
