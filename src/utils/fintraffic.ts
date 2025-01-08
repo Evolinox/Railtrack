@@ -14,22 +14,19 @@ export async function getTrainPositions() {
     if (fintrafficStore.trains.length === 0) {
         // fetch new data
         console.log("Requesting new data from fintraffic api")
-        try {
-            const response = await fetch(trainLocationsLatestUrl);
-            if (response.ok) {
-                const trains = await response.json();
-                for (const train of trains) {
-                    fintrafficStore.addTrain(train);
-                }
-                return fintrafficStore.getTrains;
-            } else {
-                // something not ok
+
+        const response = await fetch(trainLocationsLatestUrl);
+        if (response.ok) {
+            const trains = await response.json();
+            for (const train of trains) {
+                fintrafficStore.addTrain(train);
             }
-        } catch (error) {
+            return fintrafficStore.getTrains;
+        } else {
             toast({
                 variant: 'destructive',
                 title: 'Uh oh! Something went wrong.',
-                description: 'There was an error. Code',
+                description: 'There was an error. Code: ' + response.status,
             });
         }
     } else {

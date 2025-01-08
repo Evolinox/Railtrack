@@ -5,9 +5,20 @@ import {useColorMode} from "@vueuse/core";
 
 import { getTrainPositions } from '@/utils/fintraffic.ts';
 import {Train} from "@/utils/fintraffic.types.ts";
+import {useToast} from "@/components/ui/toast";
 
+const { toast } = useToast();
 const colorMode = useColorMode();
 const isDark = colorMode.value === 'dark';
+
+const validateImage = (url: string, placeholder: string): Promise<string> => {
+  return new Promise((resolve) => {
+    const img = new Image();
+    img.onload = () => resolve(url);
+    img.onerror = () => resolve(placeholder);
+    img.src = url;
+  });
+};
 
 onMounted(async () => {
   let map = leaflet.map("map", {
@@ -31,20 +42,30 @@ onMounted(async () => {
           }).addTo(map);
 
   // Fintraffic
-  const trainLocations = await getTrainPositions();
-  console.log(trainLocations);
-  trainLocations.forEach((train: Train) => {
-    const imgUrl = new URL(`../assets/operators/${train.operatorCode}.png`, import.meta.url).href;
-    const trainIcon = leaflet.icon({
-      iconUrl: imgUrl,
-      iconSize: [32, 32],
-      iconAnchor: [16, 32],
-      popupAnchor: [0, -32],
-      className: 'operator-train-icon'
+  const trainLocations: Train[] | undefined = await getTrainPositions();
+  if (!trainLocations) {
+    toast({
+      variant: 'destructive',
+      title: 'Uh oh! There are no finnish trains.',
+      description: 'trainLocations is undefined.',
     });
-    const trainMarker = leaflet.marker([train.location[0], train.location[1]], { icon: trainIcon }).addTo(map);
-    trainMarker.bindPopup(`<b>${train.trainType} ${train.trainNumber}</b><br>Geschwindigkeit: ${train.speed} km/h`);
-  });
+  } else {
+    for (const train of trainLocations) {
+      const operatorImgUrl = new URL(`../assets/operators/${train.operatorCode}.png`, import.meta.url).href;
+      const genericImgUrl = new URL('../assets/operators/generic.png', import.meta.url).href;
+      const validatedImgUrl = await validateImage(operatorImgUrl, genericImgUrl);
+
+      const trainIcon = leaflet.icon({
+        iconUrl: validatedImgUrl,
+        iconSize: [32, 32],
+        iconAnchor: [16, 32],
+        popupAnchor: [0, -32],
+        className: 'operator-train-icon'
+      });
+      const trainMarker = leaflet.marker([train.location[0], train.location[1]], { icon: trainIcon } ).addTo(map);
+      trainMarker.bindPopup(`<b>${train.operatorName} - ${train.trainType} ${train.trainNumber}</b><br>Type: ${train.trainCategory}<br>Geschwindigkeit: ${train.speed} km/h`);
+    }
+  }
 });
 </script>
 
