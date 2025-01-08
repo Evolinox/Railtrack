@@ -1,14 +1,17 @@
 <script setup lang="ts">
-import leaflet from 'leaflet';
-import {onMounted, ref} from 'vue';
+import * as leaflet from 'leaflet';
+import {onMounted} from 'vue';
 import {useColorMode} from "@vueuse/core";
+
+import { getTrainPositions } from '@/utils/fintraffic.ts';
+import {Train} from "@/utils/fintraffic.types.ts";
 
 const colorMode = useColorMode();
 const isDark = colorMode.value === 'dark';
 
-onMounted(() => {
+onMounted(async () => {
   let map = leaflet.map("map", {
-    center: [59.32783829091436, 18.057077874833766],
+    center: [60.199, 24.935],
     zoom: 12,
     inertia: true,
     zoomAnimation: true,
@@ -20,12 +23,28 @@ onMounted(() => {
       }).addTo(map);
   leaflet
       .tileLayer('http://tiles.openrailwaymap.org/standard/{z}/{x}/{y}.png',
-      {
-        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap contributors</a>, Style: <a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA 2.0</a> <a href="http://www.openrailwaymap.org/">OpenRailwayMap</a> and OpenStreetMap',
-        minZoom: 2,
-        maxZoom: 19,
-        tileSize: 256
-      }).addTo(map);
+          {
+            attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap contributors</a>, Style: <a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA 2.0</a> <a href="http://www.openrailwaymap.org/">OpenRailwayMap</a> and OpenStreetMap',
+            minZoom: 2,
+            maxZoom: 19,
+            tileSize: 256
+          }).addTo(map);
+
+  // Fintraffic
+  const trainLocations = await getTrainPositions();
+  console.log(trainLocations);
+  trainLocations.forEach((train: Train) => {
+    const imgUrl = new URL(`../assets/operators/${train.operatorCode}.png`, import.meta.url).href;
+    const trainIcon = leaflet.icon({
+      iconUrl: imgUrl,
+      iconSize: [32, 32],
+      iconAnchor: [16, 32],
+      popupAnchor: [0, -32],
+      className: 'operator-train-icon'
+    });
+    const trainMarker = leaflet.marker([train.location[0], train.location[1]], { icon: trainIcon }).addTo(map);
+    trainMarker.bindPopup(`<b>${train.trainType} ${train.trainNumber}</b><br>Geschwindigkeit: ${train.speed} km/h`);
+  });
 });
 </script>
 
@@ -38,6 +57,10 @@ onMounted(() => {
   width: 100%;
   height: 100%;
   z-index: 0;
+}
+
+.operator-train-icon {
+  border-radius: 50%;
 }
 
 .dark .leaflet-attribution-flag {
