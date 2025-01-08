@@ -20,7 +20,7 @@ export async function getTrainPositions(): Promise<Train[] | undefined> {
         if (response.ok) {
             const trains = await response.json();
             for (const train of trains) {
-                fintrafficStore.addTrain(train);
+                await fintrafficStore.addTrain(train);
             }
             return fintrafficStore.getTrains;
         } else {
@@ -43,7 +43,11 @@ export async function getUpdatedTrainPositions(): Promise<Train[] | undefined> {
     if (response.ok) {
         const trains = await response.json();
         for (const train of trains) {
-            fintrafficStore.updateTrain(train.trainNumber, [train.location.coordinates[1], train.location.coordinates[0]], train.speed);
+            // Update specific Train
+            // If update returns false, then this is a new Train and will be added
+            if (!fintrafficStore.updateTrain(train.trainNumber, [train.location.coordinates[1], train.location.coordinates[0]], train.speed)) {
+                await fintrafficStore.addTrain(train);
+            }
         }
         return fintrafficStore.getTrains;
     } else {

@@ -59,8 +59,8 @@ onMounted(async () => {
       const trainIcon = leaflet.icon({
         iconUrl: validatedImgUrl,
         iconSize: [32, 32],
-        iconAnchor: [16, 32],
-        popupAnchor: [0, -32],
+        iconAnchor: [16, 16],
+        popupAnchor: [0, -16],
         className: 'operator-train-icon'
       });
       const trainMarker = leaflet.marker(train.location, {icon: trainIcon}).addTo(map);
@@ -90,7 +90,7 @@ onMounted(async () => {
         const trainIcon = leaflet.icon({
           iconUrl: validatedImgUrl,
           iconSize: [32, 32],
-          iconAnchor: [16, 32],
+          iconAnchor: [16, 16],
           popupAnchor: [0, -32],
           className: 'operator-train-icon'
         });
@@ -99,8 +99,10 @@ onMounted(async () => {
           // If Marker for Train already exists, update position
           const trainMarker = fintrafficMarkers.get(train.trainNumber);
           trainMarker.setLatLng(train.location);
+          trainMarker.bindPopup(`<b>${train.operatorName} - ${train.trainType} ${train.trainNumber}</b><br>Type: ${train.trainCategory}<br>Speed: ${train.speed} km/h`);
         } else {
           // If Marker does not exist, create it
+
           const trainMarker = leaflet.marker(train.location, {icon: trainIcon}).addTo(map);
           trainMarker.bindPopup(`<b>${train.operatorName} - ${train.trainType} ${train.trainNumber}</b><br>Type: ${train.trainCategory}<br>Speed: ${train.speed} km/h`);
           fintrafficMarkers.set(train.trainNumber, trainMarker);

@@ -54,6 +54,9 @@ export const useFintrafficStore = defineStore('fintraffic', {
             if (train != undefined) {
                 train.location = location;
                 train.speed = speed;
+                return true;
+            } else {
+                return false;
             }
         },
         getTrainByNumber(trainNumber: number): Train | undefined {
