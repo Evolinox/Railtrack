@@ -3,6 +3,7 @@ import { ref, onMounted } from 'vue';
 import { useRouter } from 'vue-router';
 import { useColorMode } from '@vueuse/core';
 // Shadcn-Vue Components
+import Toaster from './components/ui/toast/Toaster.vue';
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -124,4 +125,5 @@ async function routeTo(link: string) {
       <RouterView />
     </SidebarInset>
   </SidebarProvider>
+  <Toaster class="pointer-events-auto" />
 </template>
