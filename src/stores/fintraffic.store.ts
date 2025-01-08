@@ -49,6 +49,13 @@ export const useFintrafficStore = defineStore('fintraffic', {
         clearTrains() {
             this.trains = [];
         },
+        updateTrain(trainNumber: number, location: [number, number], speed: number) {
+            const train = this.trains.find(train => train.trainNumber === trainNumber);
+            if (train != undefined) {
+                train.location = location;
+                train.speed = speed;
+            }
+        },
         getTrainByNumber(trainNumber: number): Train | undefined {
             const train = this.trains.find(train => train.trainNumber === trainNumber);
             if (train != undefined) {
