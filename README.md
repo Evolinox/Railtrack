@@ -1,10 +1,12 @@
 RailTrack
 =====
 
-Tracking Trains made easy: RailTrack is a simple App, which implements [https://www.openrailwaymap.org](OpenRailwayMap) and certain APIs to fetch live locations of Railvehicles.
+![Thumbnail](thumbnail.png)
+
+Tracking Trains made easy: RailTrack is a simple App, which implements [OpenRailwayMap](https://www.openrailwaymap.org) and certain APIs to fetch live locations of Railvehicles.
 
 ## Supported Countries
-- Finland: [https://www.digitraffic.fi/rautatieliikenne/](Digitraffic.fi)
+- Finland: [Digitraffic.fi](https://www.digitraffic.fi/rautatieliikenne/)
 
 > [!IMPORTANT]
 > Please do not refresh all to often, as this might result in temporary blocks from certain APIs due to too much requests!
