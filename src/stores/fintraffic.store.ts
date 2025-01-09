@@ -18,7 +18,12 @@ export const useFintrafficStore = defineStore('fintraffic', {
     actions: {
         async addTrain(trainEntry: any) {
             const trainDataUrl = "https://rata.digitraffic.fi/api/v1/trains/latest/" + trainEntry.trainNumber;
-            const response = await fetch(trainDataUrl);
+            const response = await fetch(trainDataUrl, {
+                method: 'GET',
+                headers: {
+                    'Digitraffic-User': 'Evolinox/Railtrack'
+                }
+            });
             let trainData;
             if (!response.ok) {
                 toast({

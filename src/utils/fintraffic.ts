@@ -12,7 +12,12 @@ const trainLocationsLatestUrl = 'https://rata.digitraffic.fi/api/v1/train-locati
 
 export async function getTrainPositions(): Promise<Train[] | undefined> {
     console.log("Requesting new position data from fintraffic api");
-    const response = await fetch(trainLocationsLatestUrl);
+    const response = await fetch(trainLocationsLatestUrl, {
+        method: 'GET',
+        headers: {
+            'Digitraffic-User': 'Evolinox/Railtrack'
+        }
+    });
     if (response.ok) {
         const trains = await response.json();
         for (const train of trains) {
