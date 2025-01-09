@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import {ref, onMounted, onUnmounted} from 'vue';
+import { ref, onMounted, onUnmounted } from 'vue';
 import { useRouter } from 'vue-router';
 import { useColorMode } from '@vueuse/core';
 // Shadcn-Vue Components
@@ -17,9 +17,7 @@ import {
   Sidebar,
   SidebarContent,
   SidebarGroup,
-  SidebarGroupContent,
   SidebarHeader,
-  SidebarInput,
   SidebarInset,
   SidebarMenu,
   SidebarMenuButton,
@@ -28,11 +26,12 @@ import {
   SidebarRail,
   SidebarTrigger
 } from '@/components/ui/sidebar';
-import {Label} from "@/components/ui/label";
-import {Separator} from "@/components/ui/separator";
+import { Label } from "@/components/ui/label";
+import { Separator } from "@/components/ui/separator";
 // Icons from lucide
-import {Search, Map, House, TriangleAlert, ChevronsUpDown} from 'lucide-vue-next';
-import {useFintrafficStore} from "@/stores/fintraffic.store.ts";
+import { Map, House, TriangleAlert, Info } from 'lucide-vue-next';
+import { useFintrafficStore } from "@/stores/fintraffic.store.ts";
+import SidebarFooter from './components/ui/sidebar/SidebarFooter.vue';
 
 const fintrafficStore = useFintrafficStore();
 const lastUpdate = ref('');
@@ -79,14 +78,14 @@ async function routeTo(link: string) {
             class="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
         >
           <Avatar class="h-8 w-8 rounded-lg">
-            <AvatarImage src="/tauri.svg" alt="RailtrackLogo" />
+            <AvatarImage src="/vue.svg" alt="RailtrackLogo" />
             <AvatarFallback class="rounded-lg">
               RT
             </AvatarFallback>
           </Avatar>
           <div class="grid flex-1 text-left text-sm leading-tight">
             <span class="truncate font-semibold">Railtrack</span>
-            <span class="truncate text-xs font-thin">Version: 0.0.1</span>
+            <span class="truncate text-xs font-thin">Version: 0.1.0</span>
           </div>
         </SidebarMenuButton>
       </SidebarHeader>
@@ -112,6 +111,16 @@ async function routeTo(link: string) {
           </SidebarMenu>
         </SidebarGroup>
       </SidebarContent>
+      <SidebarFooter>
+        <SidebarMenu>
+          <SidebarMenuItem>
+            <SidebarMenuButton>
+              <Info/>
+              <span>Attributions</span>
+            </SidebarMenuButton>
+          </SidebarMenuItem>
+        </SidebarMenu>
+      </SidebarFooter>
       <SidebarRail/>
     </Sidebar>
 
@@ -136,7 +145,7 @@ async function routeTo(link: string) {
           </BreadcrumbList>
         </Breadcrumb>
         <div class="relative ml-auto md:grow-0">
-          <Label class="text-xs font-thin">{{ lastUpdate }}</Label>
+          <Label class="text-xs font-thin">Last Refreshed: {{ lastUpdate }}</Label>
         </div>
       </header>
       <RouterView />

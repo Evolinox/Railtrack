@@ -24,6 +24,8 @@ onMounted(async () => {
     zoom: 12,
     inertia: true,
     zoomAnimation: true,
+    zoomControl: false,
+    attributionControl: false,
   });
   leaflet
       .tileLayer("https://tile.openstreetmap.org/{z}/{x}/{y}.png", {
@@ -80,7 +82,7 @@ async function refreshFintrafficMarker(map: leaflet.Map, fintrafficMarkers: Map<
         // If Marker for Train already exists, update position
         const trainMarker = fintrafficMarkers.get(train.trainNumber);
         trainMarker.setLatLng(train.location);
-        trainMarker.bindPopup(`<b>${train.operatorName} - ${train.trainType} ${train.trainNumber} to ${train.endStop}</b><br>Type: ${train.trainCategory}<br>Speed: ${train.speed} km/h`);
+        trainMarker.bindPopup(`<b>${train.operatorName} - ${train.trainType} ${train.trainNumber}</b><br>Towards: ${train.endStop}<br>Type: ${train.trainCategory}<br>Speed: ${train.speed} km/h`);
       } else {
         // If Marker does not exist, create it
         const trainMarker = leaflet.marker(train.location, {icon: trainIcon}).addTo(map);
@@ -116,14 +118,12 @@ async function refreshFintrafficMarker(map: leaflet.Map, fintrafficMarkers: Map<
   border-radius: 50%;
 }
 
-.dark .leaflet-attribution-flag {
-  filter: invert(100%) hue-rotate(180deg) brightness(1) contrast(100%) !important;
-}
-
-.dark .leaflet-control-zoom-in,
-.dark .leaflet-control-zoom-out,
-.dark .leaflet-control-attribution,
 .dark .map-tiles {
   filter: invert(100%) hue-rotate(180deg) brightness(1) contrast(70%);
+}
+
+.leaflet-popup-content-wrapper,
+.leaflet-popup-tip {
+  @apply bg-background text-foreground;
 }
 </style>
