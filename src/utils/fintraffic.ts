@@ -1,7 +1,7 @@
 import { useToast } from '@/components/ui/toast';
 // Stores
 import { useFintrafficStore } from '../stores/fintraffic.store.ts';
-import {Station, Train} from "@/utils/fintraffic.types.ts";
+import {Operator, Station, Train} from "@/utils/fintraffic.types.ts";
 
 const { toast } = useToast();
 const fintrafficStore = useFintrafficStore();
@@ -9,7 +9,7 @@ const fintrafficStore = useFintrafficStore();
 // API Endpoints
 const trainLocationsLatestUrl = 'https://rata.digitraffic.fi/api/v1/train-locations/latest/';
 const stationDataUrl = "https://rata.digitraffic.fi/api/v1/metadata/stations";
-
+const operatorDataUrl = "https://rata.digitraffic.fi/api/v1/metadata/operators";
 
 export async function getTrainPositions(): Promise<Train[] | undefined> {
     console.log("Requesting new position data from fintraffic api");
@@ -47,7 +47,7 @@ export function removeTrain(trainNumber: number) {
     fintrafficStore.removeTrain(trainNumber);
 }
 
-export async function initializeStations() {
+export async function initializeMetadata() {
     if (fintrafficStore.getStations.length < 1) {
         const response = await fetch(stationDataUrl, {
             method: 'GET',
@@ -75,5 +75,34 @@ export async function initializeStations() {
         }
     } else {
         console.log("Stations already initialized");
+    }
+    if (fintrafficStore.getOperators.length < 1) {
+        const response = await fetch(operatorDataUrl, {
+            method: 'GET',
+            headers: {
+                'Digitraffic-User': 'Evolinox/Railtrack'
+            }
+        });
+        let operatorData;
+        if (!response.ok) {
+            toast({
+                variant: 'destructive',
+                title: 'Uh oh! Something went wrong.',
+                description: 'There was an error fetching data for operators in finland.  Code: ' + response.status,
+            });
+        } else {
+            operatorData = await response.json();
+            for (const operator of operatorData) {
+                const operatorEntry: Operator = {
+                    id: operator.id,
+                    operatorName: operator.operatorName,
+                    operatorShortCode: operator.operatorShortCode,
+                    operatorUICCode: operator.operatorUICCode,
+                };
+                fintrafficStore.addOperator(operatorEntry);
+            }
+        }
+    } else {
+        console.log("Operators already initialized");
     }
 }

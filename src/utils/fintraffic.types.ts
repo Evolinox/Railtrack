@@ -16,3 +16,10 @@ export interface Station {
     stationName: string;
     location: [number, number];
 }
+
+export interface Operator {
+    id: number;
+    operatorShortCode: string;
+    operatorUICCode: string;
+    operatorName: string;
+}

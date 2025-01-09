@@ -1,6 +1,6 @@
 import { defineStore } from 'pinia';
 import { useLocalStorage } from '@vueuse/core';
-import { Train, Station } from "@/utils/fintraffic.types.ts";
+import { Train, Station, Operator } from "@/utils/fintraffic.types.ts";
 import { toRaw } from "vue";
 import { useToast } from "@/components/ui/toast";
 
@@ -10,16 +10,21 @@ export const useFintrafficStore = defineStore('fintraffic', {
     state: () => ({
         trains: useLocalStorage<Train[]>('trains', []),
         stations: useLocalStorage<Station[]>('stations', []),
+        operators: useLocalStorage<Operator[]>('operators', []),
     }),
 
     getters: {
         getTrains: (state) => toRaw(state.trains),
         getStations: (state) => toRaw(state.stations),
+        getOperators: (state) => toRaw(state.operators),
     },
 
     actions: {
         addStation(stationEntry: Station) {
             this.stations.push(stationEntry);
+        },
+        addOperator(operatorEntry: Operator) {
+            this.operators.push(operatorEntry);
         },
         async addTrain(trainEntry: any) {
             const trainDataUrl = "https://rata.digitraffic.fi/api/v1/trains/latest/" + trainEntry.trainNumber;
@@ -45,7 +50,7 @@ export const useFintrafficStore = defineStore('fintraffic', {
                 location: [trainEntry.location.coordinates[1], trainEntry.location.coordinates[0]],
                 nextStop: "",
                 operatorCode: trainData[0].operatorShortCode,
-                operatorName: getOperatorName(trainData[0].operatorShortCode),
+                operatorName: this.getOperatorName(trainData[0].operatorShortCode),
                 speed: trainEntry.speed,
                 trainCategory: trainData[0].trainCategory,
                 trainNumber: trainEntry.trainNumber,
@@ -84,21 +89,14 @@ export const useFintrafficStore = defineStore('fintraffic', {
             } else {
                 return stationCode;
             }
+        },
+        getOperatorName(operatorCode: string): string {
+            const operator = this.operators.find(operator => operator.operatorShortCode === operatorCode);
+            if (operator != undefined) {
+                return operator.operatorName;
+            } else {
+                return operatorCode;
+            }
         }
     },
 });
-
-function getOperatorName(operatorCode: string) {
-    switch (operatorCode) {
-        case 'vr':
-            return 'VR-Yhtymä Oy';
-        case 'operail':
-            return 'North Rail Oy';
-        case 'vr-track':
-            return 'VR Track';
-        case 'ferfi':
-            return 'Fenniarail Oy'
-        default:
-            return operatorCode;
-    }
-}

@@ -3,7 +3,7 @@ import * as leaflet from 'leaflet';
 import {onMounted, onUnmounted} from 'vue';
 import {useColorMode} from "@vueuse/core";
 
-import { getTrainPositions, removeTrain, initializeStations } from '@/utils/fintraffic.ts';
+import { getTrainPositions, removeTrain, initializeMetadata } from '@/utils/fintraffic.ts';
 import {Train} from "@/utils/fintraffic.types.ts";
 
 const colorMode = useColorMode();
@@ -42,7 +42,7 @@ onMounted(async () => {
   // Initialize markers by calling all functions
   // fintraffic/digitraffic
   const fintrafficMarkers = new Map();
-  await initializeStations();
+  await initializeMetadata();
   await refreshFintrafficMarker(map, fintrafficMarkers);
 
   // Intervals for live tracking
