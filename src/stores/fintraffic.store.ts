@@ -9,6 +9,7 @@ const { toast } = useToast();
 export const useFintrafficStore = defineStore('fintraffic', {
     state: () => ({
         trains: useLocalStorage<Train[]>('trains', []),
+        lastUpdatedTrains: useLocalStorage<string>('lastUpdatedTrains', '12:00:00'),
         stations: useLocalStorage<Station[]>('stations', []),
         operators: useLocalStorage<Operator[]>('operators', []),
     }),
@@ -17,9 +18,16 @@ export const useFintrafficStore = defineStore('fintraffic', {
         getTrains: (state) => toRaw(state.trains),
         getStations: (state) => toRaw(state.stations),
         getOperators: (state) => toRaw(state.operators),
+        getLastUpdatedTrains(): string {
+            return this.lastUpdatedTrains;
+        },
     },
 
     actions: {
+        setLastUpdatedTrains(date: string) {
+            console.log("Setting last updated trains to: " + date);
+            this.lastUpdatedTrains = date;
+        },
         addStation(stationEntry: Station) {
             this.stations.push(stationEntry);
         },

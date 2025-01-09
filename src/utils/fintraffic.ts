@@ -13,6 +13,16 @@ const operatorDataUrl = "https://rata.digitraffic.fi/api/v1/metadata/operators";
 
 export async function getTrainPositions(): Promise<Train[] | undefined> {
     console.log("Requesting new position data from fintraffic api");
+    // Get now
+    const now = new Date();
+    const hours = String(now.getHours()).padStart(2, '0');
+    const minutes = String(now.getMinutes()).padStart(2, '0');
+    const seconds = String(now.getSeconds()).padStart(2, '0');
+
+    // Set last updated fintraffic
+    fintrafficStore.setLastUpdatedTrains(`${hours}:${minutes}:${seconds}`);
+
+    // Do api stuff
     const response = await fetch(trainLocationsLatestUrl, {
         method: 'GET',
         headers: {

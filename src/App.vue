@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, onMounted } from 'vue';
+import {ref, onMounted, onUnmounted} from 'vue';
 import { useRouter } from 'vue-router';
 import { useColorMode } from '@vueuse/core';
 // Shadcn-Vue Components
@@ -32,12 +32,15 @@ import {Label} from "@/components/ui/label";
 import {Separator} from "@/components/ui/separator";
 // Icons from lucide
 import {Search, Map, House, TriangleAlert, ChevronsUpDown} from 'lucide-vue-next';
+import {useFintrafficStore} from "@/stores/fintraffic.store.ts";
 
+const fintrafficStore = useFintrafficStore();
+const lastUpdate = ref('');
 const router = useRouter();
 const pageName = ref('');
-const search = ref('');
 
 onMounted(() => {
+  lastUpdate.value = fintrafficStore.getLastUpdatedTrains;
   const colorMode = useColorMode();
   const appearance = localStorage.getItem('appearance');
 
@@ -48,6 +51,16 @@ onMounted(() => {
   }
 
   routeTo('/map')
+
+  // Intervals for refresh time
+  const refreshTimer = setInterval(async () => {
+    lastUpdate.value = fintrafficStore.getLastUpdatedTrains;
+  }, 1000);
+
+  // Clear all intervals on unmount
+  onUnmounted(() => {
+    clearInterval(refreshTimer);
+  })
 });
 
 async function routeTo(link: string) {
@@ -122,6 +135,9 @@ async function routeTo(link: string) {
             </BreadcrumbItem>
           </BreadcrumbList>
         </Breadcrumb>
+        <div class="relative ml-auto md:grow-0">
+          <Label class="text-xs font-thin">{{ lastUpdate }}</Label>
+        </div>
       </header>
       <RouterView />
     </SidebarInset>
