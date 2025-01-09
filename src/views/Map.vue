@@ -3,11 +3,9 @@ import * as leaflet from 'leaflet';
 import {onMounted, onUnmounted} from 'vue';
 import {useColorMode} from "@vueuse/core";
 
-import { getTrainPositions, getUpdatedTrainPositions, removeTrain } from '@/utils/fintraffic.ts';
+import { getTrainPositions, removeTrain } from '@/utils/fintraffic.ts';
 import {Train} from "@/utils/fintraffic.types.ts";
-import {useToast} from "@/components/ui/toast";
 
-const { toast } = useToast();
 const colorMode = useColorMode();
 const isDark = colorMode.value === 'dark';
 
@@ -21,7 +19,6 @@ const validateImage = (url: string, placeholder: string): Promise<string> => {
 };
 
 onMounted(async () => {
-  const fintrafficMarkers = new Map();
   let map = leaflet.map("map", {
     center: [60.199, 24.935],
     zoom: 12,
@@ -42,14 +39,28 @@ onMounted(async () => {
             tileSize: 256
           }).addTo(map);
 
-  // Fintraffic
+  // Initialize markers by calling all functions
+  // fintraffic/digitraffic
+  const fintrafficMarkers = new Map();
+  await refreshFintrafficMarker(map, fintrafficMarkers);
+
+  // Intervals for live tracking
+  const fintrafficMarkerRefresh = setInterval(async () => {
+    await refreshFintrafficMarker(map, fintrafficMarkers);
+  }, 5000);
+
+  // Clear all intervals on unmount
+  onUnmounted(() => {
+    clearInterval(fintrafficMarkerRefresh);
+  })
+});
+
+async function refreshFintrafficMarker(map: leaflet.Map, fintrafficMarkers: Map<any, any>) {    // refresh positions
+  console.log('refreshing positions');
+
   const trainLocations: Train[] | undefined = await getTrainPositions();
   if (!trainLocations) {
-    toast({
-      variant: 'destructive',
-      title: 'Uh oh! There are no finnish trains.',
-      description: 'trainLocations is undefined.',
-    });
+    return;
   } else {
     for (const train of trainLocations) {
       const operatorImgUrl = new URL(`../assets/operators/${train.operatorCode}.png`, import.meta.url).href;
@@ -63,67 +74,30 @@ onMounted(async () => {
         popupAnchor: [0, -16],
         className: 'operator-train-icon'
       });
-      const trainMarker = leaflet.marker(train.location, {icon: trainIcon}).addTo(map);
-      trainMarker.bindPopup(`<b>${train.operatorName} - ${train.trainType} ${train.trainNumber}</b><br>Type: ${train.trainCategory}<br>Speed: ${train.speed} km/h`);
-      fintrafficMarkers.set(train.trainNumber, trainMarker);
+
+      if (fintrafficMarkers.has(train.trainNumber)) {
+        // If Marker for Train already exists, update position
+        const trainMarker = fintrafficMarkers.get(train.trainNumber);
+        trainMarker.setLatLng(train.location);
+        trainMarker.bindPopup(`<b>${train.operatorName} - ${train.trainType} ${train.trainNumber}</b><br>Type: ${train.trainCategory}<br>Speed: ${train.speed} km/h`);
+      } else {
+        // If Marker does not exist, create it
+        const trainMarker = leaflet.marker(train.location, {icon: trainIcon}).addTo(map);
+        trainMarker.bindPopup(`<b>${train.operatorName} - ${train.trainType} ${train.trainNumber}</b><br>Type: ${train.trainCategory}<br>Speed: ${train.speed} km/h`);
+        fintrafficMarkers.set(train.trainNumber, trainMarker);
+      }
+    }
+    // Remove old markers
+    const updatedTrainNumbers = new Set(trainLocations.map((train) => train.trainNumber));
+    const markersToRemove = Array.from(fintrafficMarkers.keys()).filter((trainNumber) => !updatedTrainNumbers.has(trainNumber));
+    for (const trainNumber of markersToRemove) {
+      const marker = fintrafficMarkers.get(trainNumber);
+      map.removeLayer(marker);
+      fintrafficMarkers.delete(trainNumber);
+      removeTrain(trainNumber);
     }
   }
-
-  const fintrafficMarkerRefresh = setInterval(async () => {
-    // refresh positions
-    console.log('refreshing positions');
-
-    const trainLocations: Train[] | undefined = await getUpdatedTrainPositions();
-    if (!trainLocations) {
-      toast({
-        variant: 'destructive',
-        title: 'Uh oh! There are no Finnish trains.',
-        description: 'trainLocations is undefined.',
-      });
-      return;
-    } else {
-      for (const train of trainLocations) {
-        const operatorImgUrl = new URL(`../assets/operators/${train.operatorCode}.png`, import.meta.url).href;
-        const genericImgUrl = new URL('../assets/operators/generic.png', import.meta.url).href;
-        const validatedImgUrl = await validateImage(operatorImgUrl, genericImgUrl);
-
-        const trainIcon = leaflet.icon({
-          iconUrl: validatedImgUrl,
-          iconSize: [32, 32],
-          iconAnchor: [16, 16],
-          popupAnchor: [0, -32],
-          className: 'operator-train-icon'
-        });
-
-        if (fintrafficMarkers.has(train.trainNumber)) {
-          // If Marker for Train already exists, update position
-          const trainMarker = fintrafficMarkers.get(train.trainNumber);
-          trainMarker.setLatLng(train.location);
-          trainMarker.bindPopup(`<b>${train.operatorName} - ${train.trainType} ${train.trainNumber}</b><br>Type: ${train.trainCategory}<br>Speed: ${train.speed} km/h`);
-        } else {
-          // If Marker does not exist, create it
-
-          const trainMarker = leaflet.marker(train.location, {icon: trainIcon}).addTo(map);
-          trainMarker.bindPopup(`<b>${train.operatorName} - ${train.trainType} ${train.trainNumber}</b><br>Type: ${train.trainCategory}<br>Speed: ${train.speed} km/h`);
-          fintrafficMarkers.set(train.trainNumber, trainMarker);
-        }
-      }
-      // Remove old markers
-      const updatedTrainNumbers = new Set(trainLocations.map((train) => train.trainNumber));
-      const markersToRemove = Array.from(fintrafficMarkers.keys()).filter((trainNumber) => !updatedTrainNumbers.has(trainNumber));
-      for (const trainNumber of markersToRemove) {
-        const marker = fintrafficMarkers.get(trainNumber);
-        map.removeLayer(marker);
-        fintrafficMarkers.delete(trainNumber);
-        removeTrain(trainNumber);
-      }
-    }
-  }, 5000);
-
-  onUnmounted(() => {
-    clearInterval(fintrafficMarkerRefresh);
-  })
-});
+}
 </script>
 
 <template>
