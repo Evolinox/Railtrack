@@ -4,6 +4,7 @@ import { useRouter } from 'vue-router';
 import { useColorMode } from '@vueuse/core';
 // Shadcn-Vue Components
 import Toaster from './components/ui/toast/Toaster.vue';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -30,7 +31,7 @@ import {
 import {Label} from "@/components/ui/label";
 import {Separator} from "@/components/ui/separator";
 // Icons from lucide
-import {Search, Map, House, TriangleAlert} from 'lucide-vue-next';
+import {Search, Map, House, TriangleAlert, ChevronsUpDown} from 'lucide-vue-next';
 
 const router = useRouter();
 const pageName = ref('');
@@ -57,24 +58,24 @@ async function routeTo(link: string) {
 
 <template>
   <SidebarProvider>
-    <Sidebar>
+    <Sidebar collapsible="icon">
       <!-- Sidebar Header Config, Apptitle and Searchbar for Trains, Stations or Operators -->
       <SidebarHeader>
-        <SidebarMenu>
-          <SidebarMenuItem>
-            Railtrack
-          </SidebarMenuItem>
-        </SidebarMenu>
-        <form @submit.prevent>
-          <SidebarGroup class="py-0">
-            <SidebarGroupContent class="relative">
-              <Label for="search" class="sr-only">Search</Label>
-              <SidebarInput id="search" v-model="search" placeholder="Search..." class="pl-8"/>
-              <Search
-                  class="pointer-events-none absolute left-2 top-1/2 size-4 -translate-y-1/2 select-none opacity-50"/>
-            </SidebarGroupContent>
-          </SidebarGroup>
-        </form>
+        <SidebarMenuButton
+            size="lg"
+            class="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
+        >
+          <Avatar class="h-8 w-8 rounded-lg">
+            <AvatarImage src="/tauri.svg" alt="RailtrackLogo" />
+            <AvatarFallback class="rounded-lg">
+              RT
+            </AvatarFallback>
+          </Avatar>
+          <div class="grid flex-1 text-left text-sm leading-tight">
+            <span class="truncate font-semibold">Railtrack</span>
+            <span class="truncate text-xs font-thin">Version: 0.0.1</span>
+          </div>
+        </SidebarMenuButton>
       </SidebarHeader>
 
       <!-- Sidebar Content Config, Links to Livemap, Servicedisruptions and more -->
