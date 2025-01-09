@@ -1,13 +1,14 @@
 import { useToast } from '@/components/ui/toast';
 // Stores
 import { useFintrafficStore } from '../stores/fintraffic.store.ts';
-import {Train} from "@/utils/fintraffic.types.ts";
+import {Station, Train} from "@/utils/fintraffic.types.ts";
 
 const { toast } = useToast();
 const fintrafficStore = useFintrafficStore();
 
 // API Endpoints
 const trainLocationsLatestUrl = 'https://rata.digitraffic.fi/api/v1/train-locations/latest/';
+const stationDataUrl = "https://rata.digitraffic.fi/api/v1/metadata/stations";
 
 
 export async function getTrainPositions(): Promise<Train[] | undefined> {
@@ -27,6 +28,11 @@ export async function getTrainPositions(): Promise<Train[] | undefined> {
                 await fintrafficStore.addTrain(train);
             }
         }
+        // Remove old trains that are not in the current trains list
+        const currentTrainNumbers = new Set(trains.map((train: Train) => train.trainNumber));
+        fintrafficStore.getTrains
+            .filter((storedTrain: Train) => !currentTrainNumbers.has(storedTrain.trainNumber))
+            .forEach((oldTrain: Train) => fintrafficStore.removeTrain(oldTrain.trainNumber));
         return fintrafficStore.getTrains;
     } else {
         toast({
@@ -39,4 +45,35 @@ export async function getTrainPositions(): Promise<Train[] | undefined> {
 
 export function removeTrain(trainNumber: number) {
     fintrafficStore.removeTrain(trainNumber);
+}
+
+export async function initializeStations() {
+    if (fintrafficStore.getStations.length < 1) {
+        const response = await fetch(stationDataUrl, {
+            method: 'GET',
+            headers: {
+                'Digitraffic-User': 'Evolinox/Railtrack'
+            }
+        });
+        let stationData;
+        if (!response.ok) {
+            toast({
+                variant: 'destructive',
+                title: 'Uh oh! Something went wrong.',
+                description: 'There was an error fetching data for stations in finland.  Code: ' + response.status,
+            });
+        } else {
+            stationData = await response.json();
+            for (const station of stationData) {
+                const stationEntry: Station = {
+                    stationCode: station.stationShortCode,
+                    stationName: station.stationName,
+                    location: [station.latitude, station.longitude],
+                };
+                fintrafficStore.addStation(stationEntry);
+            }
+        }
+    } else {
+        console.log("Stations already initialized");
+    }
 }

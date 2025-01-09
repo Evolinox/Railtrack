@@ -3,7 +3,7 @@ import * as leaflet from 'leaflet';
 import {onMounted, onUnmounted} from 'vue';
 import {useColorMode} from "@vueuse/core";
 
-import { getTrainPositions, removeTrain } from '@/utils/fintraffic.ts';
+import { getTrainPositions, removeTrain, initializeStations } from '@/utils/fintraffic.ts';
 import {Train} from "@/utils/fintraffic.types.ts";
 
 const colorMode = useColorMode();
@@ -42,6 +42,7 @@ onMounted(async () => {
   // Initialize markers by calling all functions
   // fintraffic/digitraffic
   const fintrafficMarkers = new Map();
+  await initializeStations();
   await refreshFintrafficMarker(map, fintrafficMarkers);
 
   // Intervals for live tracking
@@ -79,11 +80,11 @@ async function refreshFintrafficMarker(map: leaflet.Map, fintrafficMarkers: Map<
         // If Marker for Train already exists, update position
         const trainMarker = fintrafficMarkers.get(train.trainNumber);
         trainMarker.setLatLng(train.location);
-        trainMarker.bindPopup(`<b>${train.operatorName} - ${train.trainType} ${train.trainNumber}</b><br>Type: ${train.trainCategory}<br>Speed: ${train.speed} km/h`);
+        trainMarker.bindPopup(`<b>${train.operatorName} - ${train.trainType} ${train.trainNumber} to ${train.endStop}</b><br>Type: ${train.trainCategory}<br>Speed: ${train.speed} km/h`);
       } else {
         // If Marker does not exist, create it
         const trainMarker = leaflet.marker(train.location, {icon: trainIcon}).addTo(map);
-        trainMarker.bindPopup(`<b>${train.operatorName} - ${train.trainType} ${train.trainNumber}</b><br>Type: ${train.trainCategory}<br>Speed: ${train.speed} km/h`);
+        trainMarker.bindPopup(`<b>${train.operatorName} - ${train.trainType} ${train.trainNumber} to ${train.endStop}</b><br>Type: ${train.trainCategory}<br>Speed: ${train.speed} km/h`);
         fintrafficMarkers.set(train.trainNumber, trainMarker);
       }
     }

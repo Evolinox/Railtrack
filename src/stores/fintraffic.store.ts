@@ -1,6 +1,6 @@
 import { defineStore } from 'pinia';
 import { useLocalStorage } from '@vueuse/core';
-import { Train } from "@/utils/fintraffic.types.ts";
+import { Train, Station } from "@/utils/fintraffic.types.ts";
 import { toRaw } from "vue";
 import { useToast } from "@/components/ui/toast";
 
@@ -9,13 +9,18 @@ const { toast } = useToast();
 export const useFintrafficStore = defineStore('fintraffic', {
     state: () => ({
         trains: useLocalStorage<Train[]>('trains', []),
+        stations: useLocalStorage<Station[]>('stations', []),
     }),
 
     getters: {
         getTrains: (state) => toRaw(state.trains),
+        getStations: (state) => toRaw(state.stations),
     },
 
     actions: {
+        addStation(stationEntry: Station) {
+            this.stations.push(stationEntry);
+        },
         async addTrain(trainEntry: any) {
             const trainDataUrl = "https://rata.digitraffic.fi/api/v1/trains/latest/" + trainEntry.trainNumber;
             const response = await fetch(trainDataUrl, {
@@ -36,7 +41,7 @@ export const useFintrafficStore = defineStore('fintraffic', {
             }
             const train: Train = {
                 commuterLine: trainData[0].commuterLineID,
-                endStop: "",
+                endStop: this.getStationName(trainData[0].timeTableRows[trainData[0].timeTableRows.length - 1].stationShortCode),
                 location: [trainEntry.location.coordinates[1], trainEntry.location.coordinates[0]],
                 nextStop: "",
                 operatorCode: trainData[0].operatorShortCode,
@@ -49,7 +54,9 @@ export const useFintrafficStore = defineStore('fintraffic', {
             this.trains.push(train);
         },
         removeTrain(trainNumber: number) {
+            console.log("Removing train with number: " + trainNumber);
             this.trains = this.trains.filter(train => train.trainNumber !== trainNumber);
+            console.log(this.getTrains);
         },
         clearTrains() {
             this.trains = [];
@@ -69,6 +76,14 @@ export const useFintrafficStore = defineStore('fintraffic', {
             if (train != undefined) {
                 return train;
             }
+        },
+        getStationName(stationCode: string): string {
+            const station = this.stations.find(station => station.stationCode === stationCode);
+            if (station != undefined) {
+                return station.stationName;
+            } else {
+                return stationCode;
+            }
         }
     },
 });
@@ -84,6 +99,6 @@ function getOperatorName(operatorCode: string) {
         case 'ferfi':
             return 'Fenniarail Oy'
         default:
-            return 'Unknown Operator';
+            return operatorCode;
     }
 }

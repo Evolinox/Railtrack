@@ -10,3 +10,9 @@ export interface Train {
     nextStop: string;
     endStop: string;
 }
+
+export interface Station {
+    stationCode: string;
+    stationName: string;
+    location: [number, number];
+}
