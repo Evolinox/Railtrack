@@ -66,10 +66,10 @@ async function refreshFintrafficMarker(map: leaflet.Map, fintrafficMarkers: Map<
     return;
   } else {
     for (const train of trainLocations) {
-      const operatorImgUrl = new URL(`../assets/operators/${train.operatorCode}.png`, import.meta.url).href;
-      const hslImgUrl = new URL(`../assets/operators/fi_commuterlines/${train.commuterLine}.png`, import.meta.url).href;
-      const genericImgUrl = new URL('../assets/operators/generic.png', import.meta.url).href;
-      const genericHslImgUrl = new URL('../assets/operators/fi_commuterlines/unknown.png', import.meta.url).href;
+      const operatorImgUrl = new URL(`../assets/operators/finland/${train.operatorCode}.png`, import.meta.url).href;
+      const hslImgUrl = new URL(`../assets/operators/finland/commuter/${train.commuterLine}.png`, import.meta.url).href;
+      const genericImgUrl = new URL('../assets/operators/finland/generic.png', import.meta.url).href;
+      const genericHslImgUrl = new URL('../assets/operators/finland/commuter/unknown.png', import.meta.url).href;
       const validatedImgUrl = await validateImage(operatorImgUrl, genericImgUrl);
       const validatedHslImgUrl = await validateImage(hslImgUrl, genericHslImgUrl);
 
