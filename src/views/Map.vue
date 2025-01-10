@@ -67,16 +67,31 @@ async function refreshFintrafficMarker(map: leaflet.Map, fintrafficMarkers: Map<
   } else {
     for (const train of trainLocations) {
       const operatorImgUrl = new URL(`../assets/operators/${train.operatorCode}.png`, import.meta.url).href;
+      const hslImgUrl = new URL(`../assets/operators/fi_commuterlines/${train.commuterLine}.png`, import.meta.url).href;
       const genericImgUrl = new URL('../assets/operators/generic.png', import.meta.url).href;
+      const genericHslImgUrl = new URL('../assets/operators/fi_commuterlines/unknown.png', import.meta.url).href;
       const validatedImgUrl = await validateImage(operatorImgUrl, genericImgUrl);
+      const validatedHslImgUrl = await validateImage(hslImgUrl, genericHslImgUrl);
 
-      const trainIcon = leaflet.icon({
-        iconUrl: validatedImgUrl,
-        iconSize: [32, 32],
-        iconAnchor: [16, 16],
-        popupAnchor: [0, -16],
-        className: 'operator-train-icon'
-      });
+      let trainIcon;
+
+      if (train.commuterLine != "") {
+        trainIcon = leaflet.icon({
+          iconUrl: validatedHslImgUrl,
+          iconSize: [32, 32],
+          iconAnchor: [16, 16],
+          popupAnchor: [0, -16],
+          className: 'operator-train-icon'
+        });
+      } else {
+        trainIcon = leaflet.icon({
+          iconUrl: validatedImgUrl,
+          iconSize: [32, 32],
+          iconAnchor: [16, 16],
+          popupAnchor: [0, -16],
+          className: 'operator-train-icon'
+        });
+      }
 
       if (fintrafficMarkers.has(train.trainNumber)) {
         // If Marker for Train already exists, update position
