@@ -9,6 +9,7 @@ export interface Train {
     location: [number, number];
     nextStop: string;
     endStop: string;
+    arrivalTimeEnd: Date;
 }
 
 export interface Station {

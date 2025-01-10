@@ -93,16 +93,29 @@ async function refreshFintrafficMarker(map: leaflet.Map, fintrafficMarkers: Map<
         });
       }
 
+      const time = new Date(train.arrivalTimeEnd);
+      const arrivalTime = `${String(time.getHours()).padStart(2, '0')}:${String(time.getMinutes()).padStart(2, '0')}:${String(time.getSeconds()).padStart(2, '0')} (${time.getTimezoneOffset()})`;
+
       if (fintrafficMarkers.has(train.trainNumber)) {
         // If Marker for Train already exists, update position
         const trainMarker = fintrafficMarkers.get(train.trainNumber);
         trainMarker.setLatLng(train.location);
-        trainMarker.bindPopup(`<b>${train.operatorName} - ${train.trainType} ${train.trainNumber}</b><br>Towards: ${train.endStop}<br>Type: ${train.trainCategory}<br>Speed: ${train.speed} km/h`);
+        trainMarker.bindPopup(`<b>${train.operatorName} - ${train.trainType} ${train.trainNumber}</b><br>Towards: ${train.endStop}<br>Arriving: ${arrivalTime}<br>Type: ${train.trainCategory}<br>Speed: ${train.speed} km/h`);
       } else {
         // If Marker does not exist, create it
         const trainMarker = leaflet.marker(train.location, {icon: trainIcon}).addTo(map);
-        trainMarker.bindPopup(`<b>${train.operatorName} - ${train.trainType} ${train.trainNumber} to ${train.endStop}</b><br>Type: ${train.trainCategory}<br>Speed: ${train.speed} km/h`);
+        trainMarker.bindPopup(`<b>${train.operatorName} - ${train.trainType} ${train.trainNumber}</b><br>Towards: ${train.endStop}<br>Arriving: ${arrivalTime}<br>Type: ${train.trainCategory}<br>Speed: ${train.speed} km/h`);
         fintrafficMarkers.set(train.trainNumber, trainMarker);
+      }
+      // Remove trains, that have arrived at the endstation after 1 min
+      const now = new Date();
+      const target = new Date(train.arrivalTimeEnd);
+      console.log(now, target);
+      if (now > target) {
+        const marker = fintrafficMarkers.get(train.trainNumber);
+        map.removeLayer(marker);
+        fintrafficMarkers.delete(train.trainNumber);
+        removeTrain(train.trainNumber);
       }
     }
     // Remove old markers

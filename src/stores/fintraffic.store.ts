@@ -55,6 +55,7 @@ export const useFintrafficStore = defineStore('fintraffic', {
             const train: Train = {
                 commuterLine: trainData[0].commuterLineID,
                 endStop: this.getStationName(trainData[0].timeTableRows[trainData[0].timeTableRows.length - 1].stationShortCode),
+                arrivalTimeEnd: trainData[0].timeTableRows[trainData[0].timeTableRows.length - 1].scheduledTime,
                 location: [trainEntry.location.coordinates[1], trainEntry.location.coordinates[0]],
                 nextStop: "",
                 operatorCode: trainData[0].operatorShortCode,
