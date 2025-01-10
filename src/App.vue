@@ -95,7 +95,6 @@ async function routeTo(link: string) {
             </Avatar>
             <div class="grid flex-1 text-left text-sm leading-tight">
               <span class="truncate font-semibold">Railtrack</span>
-              <span class="truncate text-xs font-thin">Version: 0.1.0</span>
             </div>
           </SidebarMenuButton>
         </SidebarHeader>
@@ -172,15 +171,24 @@ async function routeTo(link: string) {
         <div class="flex flex-col justify-between">
           <p>
             &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap contributors</a>,
-            Style: <a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA 2.0</a>
           </p>
-          <a href="http://www.openrailwaymap.org/">OpenRailwayMap</a>
-          <a href="http://www.openstreetmap.org/">OpenStreetMap</a>
           <p>
-            Finland: <a href="https://www.digitraffic.fi/rautatieliikenne/">digitraffic.fi</a>
+            Style: <a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA 2.0</a> <a href="http://www.openrailwaymap.org/">OpenRailwayMap</a>
           </p>
+          <p>
+            <a href="http://www.openstreetmap.org/">OpenStreetMap</a>
+          </p>
+          Data used for Finland
+          <ol>
+            <li>
+              <a href="https://www.digitraffic.fi/rautatieliikenne/">digitraffic.fi</a>
+            </li>
+          </ol>
         </div>
       </div>
+      <DialogFooter>
+        <Label class="text-xs font-thin">Evolinox/Railtrack@0.1.0</Label>
+      </DialogFooter>
     </DialogContent>
   <Toaster class="pointer-events-auto" />
   </Dialog>
