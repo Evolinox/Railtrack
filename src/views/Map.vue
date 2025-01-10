@@ -107,9 +107,12 @@ async function refreshFintrafficMarker(map: leaflet.Map, fintrafficMarkers: Map<
         trainMarker.bindPopup(`<b>${train.operatorName} - ${train.trainType} ${train.trainNumber}</b><br>Towards: ${train.endStop}<br>Arriving: ${arrivalTime}<br>Type: ${train.trainCategory}<br>Speed: ${train.speed} km/h`);
         fintrafficMarkers.set(train.trainNumber, trainMarker);
       }
-      // Remove trains, that have arrived at the endstation after 1 min
+      // Remove trains, that have arrived at the endstation after 2 min
       const now = new Date();
       const target = new Date(train.arrivalTimeEnd);
+      // Add 2 minutes buffer
+      const minuteBuffer = 2;
+      target.setTime(target.getTime() + minuteBuffer * 60 * 1000);
       console.log(now, target);
       if (now > target) {
         const marker = fintrafficMarkers.get(train.trainNumber);
