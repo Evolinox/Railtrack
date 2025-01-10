@@ -73,7 +73,7 @@ onMounted(() => {
 
 async function routeTo(link: string) {
   await router.push(link);
-  pageName.value = router.currentRoute.value.name;
+  pageName.value = router.currentRoute.value.name?.toString() || '';
 }
 </script>
 
@@ -88,7 +88,7 @@ async function routeTo(link: string) {
               class="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
           >
             <Avatar class="h-8 w-8 rounded-lg">
-              <AvatarImage src="/vue.svg" alt="RailtrackLogo" />
+              <AvatarImage src="/railtrack.png" alt="RailtrackLogo" />
               <AvatarFallback class="rounded-lg">
                 RT
               </AvatarFallback>
