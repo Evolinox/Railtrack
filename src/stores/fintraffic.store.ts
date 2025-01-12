@@ -35,6 +35,7 @@ export const useFintrafficStore = defineStore('fintraffic', {
             this.operators.push(operatorEntry);
         },
         async addTrain(trainEntry: any) {
+            console.log("Adding train with number: " + trainEntry.trainNumber);
             const trainDataUrl = "https://rata.digitraffic.fi/api/v1/trains/latest/" + trainEntry.trainNumber;
             const response = await fetch(trainDataUrl, {
                 method: 'GET',
@@ -52,20 +53,24 @@ export const useFintrafficStore = defineStore('fintraffic', {
             } else {
                 trainData = await response.json();
             }
-            const train: Train = {
-                commuterLine: trainData[0].commuterLineID,
-                endStop: this.getStationName(trainData[0].timeTableRows[trainData[0].timeTableRows.length - 1].stationShortCode),
-                arrivalTimeEnd: trainData[0].timeTableRows[trainData[0].timeTableRows.length - 1].scheduledTime,
-                location: [trainEntry.location.coordinates[1], trainEntry.location.coordinates[0]],
-                nextStop: "",
-                operatorCode: trainData[0].operatorShortCode,
-                operatorName: this.getOperatorName(trainData[0].operatorShortCode),
-                speed: trainEntry.speed,
-                trainCategory: trainData[0].trainCategory,
-                trainNumber: trainEntry.trainNumber,
-                trainType: trainData[0].trainType
+            if (trainData.length > 0) {
+                const train: Train = {
+                    commuterLine: trainData[0].commuterLineID,
+                    endStop: this.getStationName(trainData[0].timeTableRows[trainData[0].timeTableRows.length - 1].stationShortCode),
+                    arrivalTimeEnd: trainData[0].timeTableRows[trainData[0].timeTableRows.length - 1].scheduledTime,
+                    location: [trainEntry.location.coordinates[1], trainEntry.location.coordinates[0]],
+                    nextStop: "",
+                    operatorCode: trainData[0].operatorShortCode,
+                    operatorName: this.getOperatorName(trainData[0].operatorShortCode),
+                    speed: trainEntry.speed,
+                    trainCategory: trainData[0].trainCategory,
+                    trainNumber: trainEntry.trainNumber,
+                    trainType: trainData[0].trainType
+                }
+                this.trains.push(train);
+            } else {
+                console.log("Train data for " + trainEntry.trainNumber + " is empty");
             }
-            this.trains.push(train);
         },
         removeTrain(trainNumber: number) {
             console.log("Removing train with number: " + trainNumber);
