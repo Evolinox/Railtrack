@@ -40,5 +40,11 @@
 		<string>UIInterfaceOrientationLandscapeLeft</string>
 		<string>UIInterfaceOrientationLandscapeRight</string>
 	</array>
+	<key>NSLocationWhenInUseUsageDescription</key>
+    <string>Your location is required for Railtrack to find you on the map</string>
+    <key>NSLocationAlwaysUsageDescription</key>
+    <string>Your location is required for Railtrack to find you on the map</string>
+    <key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
+    <string>Your location is required for Railtrack to find you on the map</string>
 </dict>
 </plist>
