@@ -140,9 +140,10 @@ async function refreshFintrafficMarker(map: leaflet.Map, fintrafficMarkers: Map<
 
 <style>
 #map {
-  width: 100%;
   height: 100%;
   z-index: 0;
+  border-radius: 7px;
+  margin: 0 9px 9px 0;
 }
 
 .operator-train-icon {
