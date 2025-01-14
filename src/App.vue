@@ -23,7 +23,6 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
   SidebarProvider,
-  SidebarRail,
   SidebarTrigger
 } from '@/components/ui/sidebar';
 import { Label } from "@/components/ui/label";
