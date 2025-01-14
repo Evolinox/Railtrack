@@ -1,7 +1,7 @@
 import { useToast } from '@/components/ui/toast';
 // Stores
 import { useFintrafficStore } from '../stores/fintraffic.store.ts';
-import {Operator, Station, Train} from "@/utils/fintraffic.types.ts";
+import {Operator, Station, TrafficRestriction, Train} from "@/utils/fintraffic.types.ts";
 
 const { toast } = useToast();
 const fintrafficStore = useFintrafficStore();
@@ -10,6 +10,7 @@ const fintrafficStore = useFintrafficStore();
 const trainLocationsLatestUrl = 'https://rata.digitraffic.fi/api/v1/train-locations/latest/';
 const stationDataUrl = "https://rata.digitraffic.fi/api/v1/metadata/stations";
 const operatorDataUrl = "https://rata.digitraffic.fi/api/v1/metadata/operators";
+const trafficRestrictionsUrl = "https://rata.digitraffic.fi/api/v1/trackwork-notifications.json?state=ACTIVE";
 
 export async function getTrainPositions(): Promise<Train[] | undefined> {
     console.log("Requesting new position data from fintraffic api");
@@ -115,4 +116,33 @@ export async function initializeMetadata() {
     } else {
         console.log("Operators already initialized");
     }
+}
+
+export async function updateTrafficRestrictions(): Promise<TrafficRestriction[]> {
+    const response = await fetch(trafficRestrictionsUrl, {
+        method: 'GET',
+        headers: {
+            'Digitraffic-User': 'Evolinox/Railtrack'
+        }
+    });
+    if (response.ok) {
+        const trafficRestrictions = await response.json();
+        for (const restriction of trafficRestrictions) {
+            const entry: TrafficRestriction = {
+                id: restriction.id,
+                state: restriction.state,
+                location: [restriction.location[1], restriction.location[0]],
+                organization: restriction.organization,
+                parts: [0, "", {location: [0, 0], type: ""}]
+            }
+            fintrafficStore.addTrafficRestriction(entry);
+        }
+    } else {
+        toast({
+            variant: 'destructive',
+            title: 'Uh oh! Something went wrong.',
+            description: 'There was an error. Code: ' + response.status,
+        });
+    }
+    return fintrafficStore.getTrafficRestrictions;
 }

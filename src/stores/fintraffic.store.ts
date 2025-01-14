@@ -1,6 +1,6 @@
 import { defineStore } from 'pinia';
 import { useLocalStorage } from '@vueuse/core';
-import { Train, Station, Operator } from "@/utils/fintraffic.types.ts";
+import {Train, Station, Operator, TrafficRestriction} from "@/utils/fintraffic.types.ts";
 import { toRaw } from "vue";
 import { useToast } from "@/components/ui/toast";
 
@@ -12,12 +12,14 @@ export const useFintrafficStore = defineStore('fintraffic', {
         lastUpdatedTrains: useLocalStorage<string>('lastUpdatedTrains', '12:00:00'),
         stations: useLocalStorage<Station[]>('stations', []),
         operators: useLocalStorage<Operator[]>('operators', []),
+        trafficRestrictions: useLocalStorage<TrafficRestriction[]>('trafficRestrictions', []),
     }),
 
     getters: {
         getTrains: (state) => toRaw(state.trains),
         getStations: (state) => toRaw(state.stations),
         getOperators: (state) => toRaw(state.operators),
+        getTrafficRestrictions: (state) => toRaw(state.trafficRestrictions),
         getLastUpdatedTrains(): string {
             return this.lastUpdatedTrains;
         },
@@ -33,6 +35,9 @@ export const useFintrafficStore = defineStore('fintraffic', {
         },
         addOperator(operatorEntry: Operator) {
             this.operators.push(operatorEntry);
+        },
+        addTrafficRestriction(restrictionEntry: TrafficRestriction) {
+            this.trafficRestrictions.push(restrictionEntry);
         },
         async addTrain(trainEntry: any) {
             console.log("Adding train with number: " + trainEntry.trainNumber);

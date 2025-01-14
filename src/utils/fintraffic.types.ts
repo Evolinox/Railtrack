@@ -24,3 +24,18 @@ export interface Operator {
     operatorUICCode: string;
     operatorName: string;
 }
+
+export interface TrafficRestriction {
+    id: string;
+    state: string;
+    organization: string;
+    location: [number, number];
+    parts: [
+        index: number,
+        startDate: string,
+        locations: {
+            type: string;
+            location: [number, number];
+        }
+    ]
+}

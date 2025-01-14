@@ -3,7 +3,7 @@ import * as leaflet from 'leaflet';
 import {onMounted, onUnmounted} from 'vue';
 import {useColorMode} from "@vueuse/core";
 
-import { getTrainPositions, removeTrain, initializeMetadata } from '@/utils/fintraffic.ts';
+import { getTrainPositions, removeTrain, initializeMetadata, updateTrafficRestrictions } from '@/utils/fintraffic.ts';
 import {Train} from "@/utils/fintraffic.types.ts";
 
 const colorMode = useColorMode();
@@ -45,6 +45,7 @@ onMounted(async () => {
   // fintraffic/digitraffic
   const fintrafficMarkers = new Map();
   await initializeMetadata();
+  await addTrafficRestrictions(map);
   await refreshFintrafficMarker(map, fintrafficMarkers);
 
   // Intervals for live tracking
@@ -57,6 +58,14 @@ onMounted(async () => {
     clearInterval(fintrafficMarkerRefresh);
   })
 });
+
+async function addTrafficRestrictions(map: leaflet.Map) {
+  const trafficRestrictions = await updateTrafficRestrictions();
+  for (const restriction of trafficRestrictions) {
+    const restMarker = leaflet.marker(restriction.location).addTo(map);
+    restMarker.bindPopup(`<b>${restriction.organization}</b>`);
+  }
+}
 
 async function refreshFintrafficMarker(map: leaflet.Map, fintrafficMarkers: Map<any, any>) {    // refresh positions
   console.log('refreshing positions');
