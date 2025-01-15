@@ -10,6 +10,10 @@ export interface Train {
     nextStop: string;
     endStop: string;
     arrivalTimeEnd: Date;
+    composition: [
+        vehicleNumber: number,
+        vehicleName: string,
+    ]
 }
 
 export interface Station {
