@@ -22,7 +22,7 @@ const validateImage = (url: string, placeholder: string): Promise<string> => {
 
 onMounted(async () => {
   map = leaflet.map("map", {
-    //center: [60.199, 24.935],
+    center: [60.199, 24.935],
     zoom: 12,
     inertia: true,
     zoomAnimation: true,
@@ -59,7 +59,7 @@ onMounted(async () => {
   onUnmounted(() => {
     clearInterval(fintrafficMarkerRefresh);
   })
-  // Try fetch the current location
+  /* Try fetch the current location
   map.setView([coords.value.latitude, coords.value.longitude], 12);
   const userIcon = leaflet.icon({
     iconUrl: new URL(`../assets/user.webp`, import.meta.url).href,
@@ -69,6 +69,7 @@ onMounted(async () => {
   });
   const userMarker = leaflet.marker([coords.value.latitude, coords.value.longitude], {icon: userIcon}).addTo(map);
   userMarker.bindPopup(`<b>You</b><br>Located: ${locatedAt.value}<br>Lat: ${coords.value.latitude}<br>Lon: ${coords.value.longitude}`);
+  */
 });
 
 /*

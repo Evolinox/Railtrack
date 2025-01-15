@@ -173,10 +173,45 @@ async function getTrainData(trainEntry: any): Promise<Train | undefined> {
         trainData = await response.json();
     }
     if (trainData.length > 0) {
+        // Generate stops data
+        let stops = [];
+        for (let i = 0; i < trainData[0].timeTableRows.length; i = i + 2) {
+            if (i == 0) {
+                stops.push({
+                    arrivalTime: "---",
+                    departureTime: trainData[0].timeTableRows[i].scheduledTime,
+                    stationName: fintrafficStore.getStationName(trainData[0].timeTableRows[i].stationShortCode),
+                    stationCode: trainData[0].timeTableRows[i].stationShortCode
+                })
+            } else if (i == trainData[0].timeTableRows.length - 1) {
+                stops.push({
+                    arrivalTime: trainData[0].timeTableRows[i].scheduledTime,
+                    departureTime: "---",
+                    stationName: fintrafficStore.getStationName(trainData[0].timeTableRows[i].stationShortCode),
+                    stationCode: trainData[0].timeTableRows[i].stationShortCode
+                })
+            } else {
+                stops.push({
+                    arrivalTime: trainData[0].timeTableRows[i-1].scheduledTime,
+                    departureTime: trainData[0].timeTableRows[i].scheduledTime,
+                    stationName: fintrafficStore.getStationName(trainData[0].timeTableRows[i].stationShortCode),
+                    stationCode: trainData[0].timeTableRows[i].stationShortCode
+                })
+            }
+        }
+        // Generate composition data
+        const composition = [
+            { vehicleNumber: 101, vehicleName: "Engine A" },
+            { vehicleNumber: 102, vehicleName: "Coach B" },
+            { vehicleNumber: 103, vehicleName: "Coach C" }
+        ];
+
+        // Train
         return {
-            commuterLine: trainData[0].commuterLineID,
-            endStop: fintrafficStore.getStationName(trainData[0].timeTableRows[trainData[0].timeTableRows.length - 1].stationShortCode),
             arrivalTimeEnd: trainData[0].timeTableRows[trainData[0].timeTableRows.length - 1].scheduledTime,
+            commuterLine: trainData[0].commuterLineID,
+            composition: composition,
+            endStop: fintrafficStore.getStationName(trainData[0].timeTableRows[trainData[0].timeTableRows.length - 1].stationShortCode),
             location: [trainEntry.location.coordinates[1], trainEntry.location.coordinates[0]],
             nextStop: "",
             operatorCode: trainData[0].operatorShortCode,
@@ -184,7 +219,8 @@ async function getTrainData(trainEntry: any): Promise<Train | undefined> {
             speed: trainEntry.speed,
             trainCategory: trainData[0].trainCategory,
             trainNumber: trainEntry.trainNumber,
-            trainType: trainData[0].trainType
+            trainType: trainData[0].trainType,
+            stops: stops,
         };
     } else {
         console.log("Train data for " + trainEntry.trainNumber + " is empty");
