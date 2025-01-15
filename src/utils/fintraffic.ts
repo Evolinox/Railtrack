@@ -1,6 +1,6 @@
-import { useToast } from '@/components/ui/toast';
+import {useToast} from '@/components/ui/toast';
 // Stores
-import { useFintrafficStore } from '../stores/fintraffic.store.ts';
+import {useFintrafficStore} from '../stores/fintraffic.store.ts';
 import {Operator, Station, TrafficRestriction, Train} from "@/utils/fintraffic.types.ts";
 
 const { toast } = useToast();
@@ -9,6 +9,7 @@ let removedTrainNumbers: number[] = [];
 
 // API Endpoints
 const trainLocationsLatestUrl = 'https://rata.digitraffic.fi/api/v1/train-locations/latest/';
+const trainDataUrl = "https://rata.digitraffic.fi/api/v1/trains/latest/";
 const stationDataUrl = "https://rata.digitraffic.fi/api/v1/metadata/stations";
 const operatorDataUrl = "https://rata.digitraffic.fi/api/v1/metadata/operators";
 const trafficRestrictionsUrl = "https://rata.digitraffic.fi/api/v1/trackwork-notifications.json?state=ACTIVE";
@@ -38,7 +39,10 @@ export async function getTrainPositions(): Promise<Train[] | undefined> {
                 // Update specific Train
                 // If update returns false, then this is a new Train and will be added
                 if (!fintrafficStore.updateTrain(train.trainNumber, [train.location.coordinates[1], train.location.coordinates[0]], train.speed)) {
-                    await fintrafficStore.addTrain(train);
+                    const trainEntry = await getTrainData(train);
+                    if (trainEntry) {
+                        await fintrafficStore.addTrain(trainEntry);
+                    }
                 }
             }
         }
@@ -149,4 +153,40 @@ export async function updateTrafficRestrictions(): Promise<TrafficRestriction[]>
         });
     }
     return fintrafficStore.getTrafficRestrictions;
+}
+
+async function getTrainData(trainEntry: any): Promise<Train | undefined> {
+    const response = await fetch(trainDataUrl + trainEntry.trainNumber, {
+        method: 'GET',
+        headers: {
+            'Digitraffic-User': 'Evolinox/Railtrack'
+        }
+    });
+    let trainData;
+    if (!response.ok) {
+        toast({
+            variant: 'destructive',
+            title: 'Uh oh! Something went wrong.',
+            description: 'There was an error fetching data for Train No.: ' + trainEntry.trainNumber + '. Code: ' + response.status,
+        });
+    } else {
+        trainData = await response.json();
+    }
+    if (trainData.length > 0) {
+        return {
+            commuterLine: trainData[0].commuterLineID,
+            endStop: fintrafficStore.getStationName(trainData[0].timeTableRows[trainData[0].timeTableRows.length - 1].stationShortCode),
+            arrivalTimeEnd: trainData[0].timeTableRows[trainData[0].timeTableRows.length - 1].scheduledTime,
+            location: [trainEntry.location.coordinates[1], trainEntry.location.coordinates[0]],
+            nextStop: "",
+            operatorCode: trainData[0].operatorShortCode,
+            operatorName: fintrafficStore.getOperatorName(trainData[0].operatorShortCode),
+            speed: trainEntry.speed,
+            trainCategory: trainData[0].trainCategory,
+            trainNumber: trainEntry.trainNumber,
+            trainType: trainData[0].trainType
+        };
+    } else {
+        console.log("Train data for " + trainEntry.trainNumber + " is empty");
+    }
 }

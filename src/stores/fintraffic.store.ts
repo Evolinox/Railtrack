@@ -2,9 +2,6 @@ import { defineStore } from 'pinia';
 import { useLocalStorage } from '@vueuse/core';
 import {Train, Station, Operator, TrafficRestriction} from "@/utils/fintraffic.types.ts";
 import { toRaw } from "vue";
-import { useToast } from "@/components/ui/toast";
-
-const { toast } = useToast();
 
 export const useFintrafficStore = defineStore('fintraffic', {
     state: () => ({
@@ -39,42 +36,8 @@ export const useFintrafficStore = defineStore('fintraffic', {
         addTrafficRestriction(restrictionEntry: TrafficRestriction) {
             this.trafficRestrictions.push(restrictionEntry);
         },
-        async addTrain(trainEntry: any) {
-            const trainDataUrl = "https://rata.digitraffic.fi/api/v1/trains/latest/" + trainEntry.trainNumber;
-            const response = await fetch(trainDataUrl, {
-                method: 'GET',
-                headers: {
-                    'Digitraffic-User': 'Evolinox/Railtrack'
-                }
-            });
-            let trainData;
-            if (!response.ok) {
-                toast({
-                    variant: 'destructive',
-                    title: 'Uh oh! Something went wrong.',
-                    description: 'There was an error fetching data for Train No.: ' + trainEntry.trainNumber + '. Code: ' + response.status,
-                });
-            } else {
-                trainData = await response.json();
-            }
-            if (trainData.length > 0) {
-                const train: Train = {
-                    commuterLine: trainData[0].commuterLineID,
-                    endStop: this.getStationName(trainData[0].timeTableRows[trainData[0].timeTableRows.length - 1].stationShortCode),
-                    arrivalTimeEnd: trainData[0].timeTableRows[trainData[0].timeTableRows.length - 1].scheduledTime,
-                    location: [trainEntry.location.coordinates[1], trainEntry.location.coordinates[0]],
-                    nextStop: "",
-                    operatorCode: trainData[0].operatorShortCode,
-                    operatorName: this.getOperatorName(trainData[0].operatorShortCode),
-                    speed: trainEntry.speed,
-                    trainCategory: trainData[0].trainCategory,
-                    trainNumber: trainEntry.trainNumber,
-                    trainType: trainData[0].trainType
-                }
-                this.trains.push(train);
-            } else {
-                console.log("Train data for " + trainEntry.trainNumber + " is empty");
-            }
+        async addTrain(trainEntry: Train) {
+            this.trains.push(trainEntry);
         },
         removeTrain(trainNumber: number) {
             this.trains = this.trains.filter(train => train.trainNumber !== trainNumber);
