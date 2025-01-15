@@ -29,15 +29,13 @@ const routes : any[] = [
         path: '/train',
         name: 'Train',
         component: () => import('./views/TrainSearch.vue'),
-        children: [
-            {
-                path: ':id',
-                name: ':id',
-                component: () => import('./views/TrainStatus.vue'),
-                props: true,
-            },
-        ],
-    }
+    },
+    {
+        path: '/train/:id',
+        name: 'Train/id',
+        component: () => import('./views/TrainStatus.vue'),
+        props: true,
+    },
 ]
 
 const router = createRouter({

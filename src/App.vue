@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import { ref, onMounted, onUnmounted } from 'vue';
-import { useRouter } from 'vue-router';
+import {ref, onMounted, onUnmounted, watch} from 'vue';
+import { useRouter, useRoute } from 'vue-router';
 import { useColorMode } from '@vueuse/core';
 // Shadcn-Vue Components
 import Toaster from './components/ui/toast/Toaster.vue';
@@ -44,7 +44,11 @@ import {
 const fintrafficStore = useFintrafficStore();
 const lastUpdate = ref('');
 const router = useRouter();
-const pageName = ref('');
+const route = useRoute();
+const routeLayerTwo = ref(route.name);
+const routeLayerThree = ref('');
+const liveUpdateVisible = ref(false);
+const thirdLayerRoute = ref(false);
 
 onMounted(() => {
   lastUpdate.value = fintrafficStore.getLastUpdatedTrains;
@@ -65,12 +69,33 @@ onMounted(() => {
   // Clear all intervals on unmount
   onUnmounted(() => {
     clearInterval(refreshTimer);
-  })
+  });
 });
+
+watch(() => route.name,  // Watch for changes in the route's name
+    (newName, oldName) => {
+      console.log('Route name changed:', oldName, '->', newName);
+      if (typeof newName == "string" && newName?.includes('/')) {
+        thirdLayerRoute.value = true;
+        const parts = newName.split('/');
+        console.log(parts);
+        routeLayerTwo.value = parts[0];
+        routeLayerThree.value = route.params.id.toString();
+        console.log(routeLayerThree.value);
+      } else {
+        thirdLayerRoute.value = false;
+        routeLayerTwo.value = route.name;
+      }
+    }
+);
 
 async function routeTo(link: string) {
   await router.push(link);
-  pageName.value = router.currentRoute.value.name?.toString() || '';
+  if (link === '/map') {
+    liveUpdateVisible.value = true;
+  } else {
+    liveUpdateVisible.value = false;
+  }
 }
 </script>
 
@@ -153,13 +178,22 @@ async function routeTo(link: string) {
               </BreadcrumbItem>
               <BreadcrumbSeparator class="hidden md:block"/>
               <BreadcrumbItem class="hidden md:block">
+                <BreadcrumbPage v-if="!thirdLayerRoute">
+                  {{ routeLayerTwo }}
+                </BreadcrumbPage>
+                <BreadcrumbLink v-if="thirdLayerRoute">
+                  {{ routeLayerTwo }}
+                </BreadcrumbLink>
+              </BreadcrumbItem>
+              <BreadcrumbSeparator v-if="thirdLayerRoute" class="hidden md:block"/>
+              <BreadcrumbItem v-if="thirdLayerRoute" class="hidden md:block">
                 <BreadcrumbPage>
-                  {{ pageName }}
+                  {{ routeLayerThree }}
                 </BreadcrumbPage>
               </BreadcrumbItem>
             </BreadcrumbList>
           </Breadcrumb>
-          <div class="relative ml-auto md:grow-0">
+          <div v-if="liveUpdateVisible" class="relative ml-auto md:grow-0">
             <Label class="text-xs font-thin">Last Refreshed: {{ lastUpdate }}</Label>
           </div>
         </header>
