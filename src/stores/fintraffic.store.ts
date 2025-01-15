@@ -40,7 +40,6 @@ export const useFintrafficStore = defineStore('fintraffic', {
             this.trafficRestrictions.push(restrictionEntry);
         },
         async addTrain(trainEntry: any) {
-            console.log("Adding train with number: " + trainEntry.trainNumber);
             const trainDataUrl = "https://rata.digitraffic.fi/api/v1/trains/latest/" + trainEntry.trainNumber;
             const response = await fetch(trainDataUrl, {
                 method: 'GET',
@@ -78,9 +77,7 @@ export const useFintrafficStore = defineStore('fintraffic', {
             }
         },
         removeTrain(trainNumber: number) {
-            console.log("Removing train with number: " + trainNumber);
             this.trains = this.trains.filter(train => train.trainNumber !== trainNumber);
-            console.log(this.getTrains);
         },
         clearTrains() {
             this.trains = [];

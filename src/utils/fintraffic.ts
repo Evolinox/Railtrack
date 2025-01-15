@@ -5,6 +5,7 @@ import {Operator, Station, TrafficRestriction, Train} from "@/utils/fintraffic.t
 
 const { toast } = useToast();
 const fintrafficStore = useFintrafficStore();
+let removedTrainNumbers: number[] = [];
 
 // API Endpoints
 const trainLocationsLatestUrl = 'https://rata.digitraffic.fi/api/v1/train-locations/latest/';
@@ -33,10 +34,12 @@ export async function getTrainPositions(): Promise<Train[] | undefined> {
     if (response.ok) {
         const trains = await response.json();
         for (const train of trains) {
-            // Update specific Train
-            // If update returns false, then this is a new Train and will be added
-            if (!fintrafficStore.updateTrain(train.trainNumber, [train.location.coordinates[1], train.location.coordinates[0]], train.speed)) {
-                await fintrafficStore.addTrain(train);
+            if (!removedTrainNumbers.includes(train.trainNumber)) {
+                // Update specific Train
+                // If update returns false, then this is a new Train and will be added
+                if (!fintrafficStore.updateTrain(train.trainNumber, [train.location.coordinates[1], train.location.coordinates[0]], train.speed)) {
+                    await fintrafficStore.addTrain(train);
+                }
             }
         }
         // Remove old trains that are not in the current trains list
@@ -55,6 +58,7 @@ export async function getTrainPositions(): Promise<Train[] | undefined> {
 }
 
 export function removeTrain(trainNumber: number) {
+    removedTrainNumbers.push(trainNumber);
     fintrafficStore.removeTrain(trainNumber);
 }
 
