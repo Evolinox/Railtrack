@@ -60,10 +60,16 @@ onMounted(async () => {
 });
 
 async function addTrafficRestrictions(map: leaflet.Map) {
+  const restIcon = leaflet.icon({
+    iconUrl: new URL(`../assets/restriction.webp`, import.meta.url).href,
+    iconSize: [32, 32],
+    iconAnchor: [16, 16],
+    popupAnchor: [0, -16],
+  });
   const trafficRestrictions = await updateTrafficRestrictions();
   for (const restriction of trafficRestrictions) {
-    const restMarker = leaflet.marker(restriction.location).addTo(map);
-    restMarker.bindPopup(`<b>${restriction.organization}</b>`);
+    const restMarker = leaflet.marker(restriction.location, {icon: restIcon}).addTo(map);
+    restMarker.bindPopup(`<b>Traffic Restriction</b><br>Organization: ${restriction.organization}<br>Starting: DD.MM.YY`);
   }
 }
 
