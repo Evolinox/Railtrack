@@ -1,8 +1,12 @@
 <script setup lang="ts">
 import { Button } from '@/components/ui/button'
+import {useFintrafficStore} from '../stores/fintraffic.store.ts';
+
+const fintrafficStore = useFintrafficStore();
 
 function clearLocalStorage() {
-  localStorage.clear()
+  localStorage.clear();
+  fintrafficStore.clearTrains();
 }
 </script>
 
