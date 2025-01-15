@@ -1,13 +1,15 @@
 <script setup lang="ts">
 import * as leaflet from 'leaflet';
-import {onMounted, onUnmounted} from 'vue';
-import {useColorMode} from "@vueuse/core";
+import {onMounted, onUnmounted, watch} from 'vue';
+import {useColorMode, useGeolocation} from "@vueuse/core";
 
 import { getTrainPositions, removeTrain, initializeMetadata, updateTrafficRestrictions } from '@/utils/fintraffic.ts';
 import {Train} from "@/utils/fintraffic.types.ts";
 
 const colorMode = useColorMode();
+const { coords, locatedAt } = useGeolocation()
 const isDark = colorMode.value === 'dark';
+let map: leaflet.Map;
 
 const validateImage = (url: string, placeholder: string): Promise<string> => {
   return new Promise((resolve) => {
@@ -19,8 +21,8 @@ const validateImage = (url: string, placeholder: string): Promise<string> => {
 };
 
 onMounted(async () => {
-  let map = leaflet.map("map", {
-    center: [60.199, 24.935],
+  map = leaflet.map("map", {
+    //center: [60.199, 24.935],
     zoom: 12,
     inertia: true,
     zoomAnimation: true,
@@ -57,8 +59,25 @@ onMounted(async () => {
   onUnmounted(() => {
     clearInterval(fintrafficMarkerRefresh);
   })
+  // Try fetch the current location
+  map.setView([coords.value.latitude, coords.value.longitude], 12);
+  const userIcon = leaflet.icon({
+    iconUrl: new URL(`../assets/user.webp`, import.meta.url).href,
+    iconSize: [32, 32],
+    iconAnchor: [16, 16],
+    popupAnchor: [0, -16],
+  });
+  const userMarker = leaflet.marker([coords.value.latitude, coords.value.longitude], {icon: userIcon}).addTo(map);
+  userMarker.bindPopup(`<b>You</b><br>Located: ${locatedAt.value}<br>Lat: ${coords.value.latitude}<br>Lon: ${coords.value.longitude}`);
 });
 
+/*
+watch(() => coords.value, async() => {
+  console.log('Location changed');
+  console.log(coords.value);
+  map.setView([coords.value.latitude, coords.value.longitude], 12);
+})
+*/
 async function addTrafficRestrictions(map: leaflet.Map) {
   const restIcon = leaflet.icon({
     iconUrl: new URL(`../assets/restriction.webp`, import.meta.url).href,
@@ -148,7 +167,7 @@ async function refreshFintrafficMarker(map: leaflet.Map, fintrafficMarkers: Map<
 </script>
 
 <template>
-  <div id="map" v-bind:class="(isDark)?'dark':''" class="h-full mr-2 mb-2 z-0"></div>
+  <div id="map" v-bind:class="(isDark)?'dark':''" class="border h-full mr-2 mb-2 z-0"></div>
 </template>
 
 <style>
@@ -164,6 +183,9 @@ async function refreshFintrafficMarker(map: leaflet.Map, fintrafficMarkers: Map<
   filter: invert(100%) hue-rotate(180deg) brightness(1) contrast(70%);
 }
 
+.leaflet-container {
+  @apply bg-sidebar-accent;
+}
 .leaflet-popup-content-wrapper,
 .leaflet-popup-tip {
   @apply bg-background text-foreground;
