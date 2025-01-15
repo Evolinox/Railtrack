@@ -81,33 +81,6 @@ async function refreshFintrafficMarker(map: leaflet.Map, fintrafficMarkers: Map<
     return;
   } else {
     for (const train of trainLocations) {
-      const operatorImgUrl = new URL(`../assets/operators/finland/${train.operatorCode}.png`, import.meta.url).href;
-      const hslImgUrl = new URL(`../assets/operators/finland/commuter/${train.commuterLine}.png`, import.meta.url).href;
-      const genericImgUrl = new URL('../assets/operators/finland/generic.png', import.meta.url).href;
-      const genericHslImgUrl = new URL('../assets/operators/finland/commuter/unknown.png', import.meta.url).href;
-      const validatedImgUrl = await validateImage(operatorImgUrl, genericImgUrl);
-      const validatedHslImgUrl = await validateImage(hslImgUrl, genericHslImgUrl);
-
-      let trainIcon;
-
-      if (train.commuterLine != "") {
-        trainIcon = leaflet.icon({
-          iconUrl: validatedHslImgUrl,
-          iconSize: [32, 32],
-          iconAnchor: [16, 16],
-          popupAnchor: [0, -16],
-          className: 'operator-train-icon'
-        });
-      } else {
-        trainIcon = leaflet.icon({
-          iconUrl: validatedImgUrl,
-          iconSize: [32, 32],
-          iconAnchor: [16, 16],
-          popupAnchor: [0, -16],
-          className: 'operator-train-icon'
-        });
-      }
-
       const time = new Date(train.arrivalTimeEnd);
       const arrivalTime = `${String(time.getHours()).padStart(2, '0')}:${String(time.getMinutes()).padStart(2, '0')}:${String(time.getSeconds()).padStart(2, '0')} (${time.getTimezoneOffset()})`;
 
@@ -118,6 +91,32 @@ async function refreshFintrafficMarker(map: leaflet.Map, fintrafficMarkers: Map<
         trainMarker.bindPopup(`<b>${train.operatorName} - ${train.trainType} ${train.trainNumber}</b><br>Towards: ${train.endStop}<br>Arriving: ${arrivalTime}<br>Type: ${train.trainCategory}<br>Speed: ${train.speed} km/h`);
       } else {
         // If Marker does not exist, create it
+        const operatorImgUrl = new URL(`../assets/operators/finland/${train.operatorCode}.png`, import.meta.url).href;
+        const hslImgUrl = new URL(`../assets/operators/finland/commuter/${train.commuterLine}.png`, import.meta.url).href;
+        const genericImgUrl = new URL('../assets/operators/finland/generic.png', import.meta.url).href;
+        const genericHslImgUrl = new URL('../assets/operators/finland/commuter/unknown.png', import.meta.url).href;
+        const validatedImgUrl = await validateImage(operatorImgUrl, genericImgUrl);
+        const validatedHslImgUrl = await validateImage(hslImgUrl, genericHslImgUrl);
+
+        let trainIcon;
+
+        if (train.commuterLine != "") {
+          trainIcon = leaflet.icon({
+            iconUrl: validatedHslImgUrl,
+            iconSize: [32, 32],
+            iconAnchor: [16, 16],
+            popupAnchor: [0, -16],
+            className: 'operator-train-icon'
+          });
+        } else {
+          trainIcon = leaflet.icon({
+            iconUrl: validatedImgUrl,
+            iconSize: [32, 32],
+            iconAnchor: [16, 16],
+            popupAnchor: [0, -16],
+            className: 'operator-train-icon'
+          });
+        }
         const trainMarker = leaflet.marker(train.location, {icon: trainIcon}).addTo(map);
         trainMarker.bindPopup(`<b>${train.operatorName} - ${train.trainType} ${train.trainNumber}</b><br>Towards: ${train.endStop}<br>Arriving: ${arrivalTime}<br>Type: ${train.trainCategory}<br>Speed: ${train.speed} km/h`);
         fintrafficMarkers.set(train.trainNumber, trainMarker);
@@ -128,7 +127,6 @@ async function refreshFintrafficMarker(map: leaflet.Map, fintrafficMarkers: Map<
       // Add 2 minutes buffer
       const minuteBuffer = 2;
       target.setTime(target.getTime() + minuteBuffer * 60 * 1000);
-      console.log(now, target);
       if (now > target) {
         const marker = fintrafficMarkers.get(train.trainNumber);
         map.removeLayer(marker);
