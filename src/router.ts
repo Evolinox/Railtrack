@@ -3,7 +3,8 @@ import { createRouter, createWebHistory } from 'vue-router';
 const routes : any[] = [
     {
         path: '/',
-        redirect: '/map',
+        name: 'Home',
+        component: () => import('./views/Home.vue'),
     },
     {
         path: '/map',

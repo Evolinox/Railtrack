@@ -28,7 +28,7 @@ import {
 import { Label } from "@/components/ui/label";
 import { Separator } from "@/components/ui/separator";
 // Icons from lucide
-import { Map, House, TriangleAlert, Info, Settings, TrainFront } from 'lucide-vue-next';
+import { Map, School, TriangleAlert, Info, Settings, TrainFront } from 'lucide-vue-next';
 import { useFintrafficStore } from "@/stores/fintraffic.store.ts";
 import SidebarFooter from './components/ui/sidebar/SidebarFooter.vue';
 import {
@@ -46,9 +46,10 @@ const lastUpdate = ref('');
 const router = useRouter();
 const route = useRoute();
 const routeLayerTwo = ref(route.name);
+const secondLayerRoute = ref(false);
 const routeLayerThree = ref('');
-const liveUpdateVisible = ref(false);
 const thirdLayerRoute = ref(false);
+const liveUpdateVisible = ref(false);
 
 onMounted(() => {
   lastUpdate.value = fintrafficStore.getLastUpdatedTrains;
@@ -72,21 +73,36 @@ onMounted(() => {
   });
 });
 
-watch(() => route.name,  // Watch for changes in the route's name
-    (newName, oldName) => {
-      console.log('Route name changed:', oldName, '->', newName);
-      if (typeof newName == "string" && newName?.includes('/')) {
-        thirdLayerRoute.value = true;
-        const parts = newName.split('/');
-        routeLayerTwo.value = parts[0];
-        routeLayerThree.value = route.params.id.toString();
-      } else {
-        thirdLayerRoute.value = false;
-        routeLayerTwo.value = route.name;
-      }
+/*
+Doing funny things with the Breadcumbs in the Header 
+basically checking the route name and splitting it to parts
+for example "trains/123" would be split to "trains" and "123" and "thirdLayerRoute"
+would be set to true, so the breadcrumb would show the second (third) layer of the route.
+Also, if the route is "home" the second and third layer routes are set to false, so only
+Railtrack will be visible in the breadcrumb.
+*/
+watch(() => route.name, (newName, oldName) => {
+    console.log('Route name changed:', oldName, '->', newName);
+    if (typeof newName == "string" && newName?.includes('/') && newName != "Home") {
+      secondLayerRoute.value = true;
+      thirdLayerRoute.value = true;
+      const parts = newName.split('/');
+      routeLayerTwo.value = parts[0];
+      routeLayerThree.value = route.params.id.toString();
+    } else if (newName != "Home") {
+      secondLayerRoute.value = true;
+      thirdLayerRoute.value = false;
+      routeLayerTwo.value = route.name;
+    } else if (newName == "Home") {
+      secondLayerRoute.value = false;
+      thirdLayerRoute.value = false;
     }
+  }
 );
 
+/*
+a simple "routeTo" link function that takes a string and pushes it to the router
+*/
 async function routeTo(link: string) {
   await router.push(link);
   if (link === '/map') {
@@ -103,10 +119,7 @@ async function routeTo(link: string) {
       <Sidebar collapsible="icon">
         <!-- Sidebar Header Config, Apptitle and Searchbar for Trains, Stations or Operators -->
         <SidebarHeader>
-          <SidebarMenuButton
-              size="lg"
-              class="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
-          >
+          <SidebarMenuButton size="lg" class="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground" @click="routeTo('/')">
             <Avatar class="h-8 w-8 rounded-lg">
               <AvatarImage src="/railtrack.png" alt="RailtrackLogo" />
               <AvatarFallback class="rounded-lg">
@@ -125,7 +138,7 @@ async function routeTo(link: string) {
             <SidebarMenu>
               <SidebarMenuItem>
                 <SidebarMenuButton @click="routeTo('/stations')">
-                  <House/>
+                  <School/>
                   <span>Stations</span>
                 </SidebarMenuButton>
                 <SidebarMenuButton @click="routeTo('/train')">
@@ -174,12 +187,12 @@ async function routeTo(link: string) {
                   Railtrack
                 </BreadcrumbLink>
               </BreadcrumbItem>
-              <BreadcrumbSeparator class="hidden md:block"/>
+              <BreadcrumbSeparator v-if="secondLayerRoute" class="hidden md:block"/>
               <BreadcrumbItem class="hidden md:block">
-                <BreadcrumbPage v-if="!thirdLayerRoute">
+                <BreadcrumbPage v-if="!thirdLayerRoute && secondLayerRoute">
                   {{ routeLayerTwo }}
                 </BreadcrumbPage>
-                <BreadcrumbLink v-if="thirdLayerRoute" @click="routeTo('/' + routeLayerTwo?.toString().toLowerCase())">
+                <BreadcrumbLink v-if="thirdLayerRoute && secondLayerRoute" @click="routeTo('/' + routeLayerTwo?.toString().toLowerCase())">
                   {{ routeLayerTwo }}
                 </BreadcrumbLink>
               </BreadcrumbItem>
