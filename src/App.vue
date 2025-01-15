@@ -78,10 +78,8 @@ watch(() => route.name,  // Watch for changes in the route's name
       if (typeof newName == "string" && newName?.includes('/')) {
         thirdLayerRoute.value = true;
         const parts = newName.split('/');
-        console.log(parts);
         routeLayerTwo.value = parts[0];
         routeLayerThree.value = route.params.id.toString();
-        console.log(routeLayerThree.value);
       } else {
         thirdLayerRoute.value = false;
         routeLayerTwo.value = route.name;
@@ -172,7 +170,7 @@ async function routeTo(link: string) {
           <Breadcrumb>
             <BreadcrumbList>
               <BreadcrumbItem class="hidden md:block">
-                <BreadcrumbLink>
+                <BreadcrumbLink @click="routeTo('/')">
                   Railtrack
                 </BreadcrumbLink>
               </BreadcrumbItem>
@@ -181,7 +179,7 @@ async function routeTo(link: string) {
                 <BreadcrumbPage v-if="!thirdLayerRoute">
                   {{ routeLayerTwo }}
                 </BreadcrumbPage>
-                <BreadcrumbLink v-if="thirdLayerRoute">
+                <BreadcrumbLink v-if="thirdLayerRoute" @click="routeTo('/' + routeLayerTwo?.toString().toLowerCase())">
                   {{ routeLayerTwo }}
                 </BreadcrumbLink>
               </BreadcrumbItem>
