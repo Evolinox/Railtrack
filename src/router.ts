@@ -19,6 +19,24 @@ const routes : any[] = [
         path: '/disruptions',
         name: 'Disruptions',
         component: () => import('./views/Disruptions.vue'),
+    },
+    {
+        path: '/settings',
+        name: 'Settings',
+        component: () => import('./views/Settings.vue'),
+    },
+    {
+        path: '/train',
+        name: 'Train',
+        component: () => import('./views/TrainSearch.vue'),
+        children: [
+            {
+                path: ':id',
+                name: ':id',
+                component: () => import('./views/TrainStatus.vue'),
+                props: true,
+            },
+        ],
     }
 ]
 

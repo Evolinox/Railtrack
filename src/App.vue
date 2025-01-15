@@ -28,7 +28,7 @@ import {
 import { Label } from "@/components/ui/label";
 import { Separator } from "@/components/ui/separator";
 // Icons from lucide
-import { Map, House, TriangleAlert, Info } from 'lucide-vue-next';
+import { Map, House, TriangleAlert, Info, Settings, TrainFront } from 'lucide-vue-next';
 import { useFintrafficStore } from "@/stores/fintraffic.store.ts";
 import SidebarFooter from './components/ui/sidebar/SidebarFooter.vue';
 import {
@@ -56,8 +56,6 @@ onMounted(() => {
   } else {
     colorMode.value = 'auto';
   }
-
-  routeTo('/map')
 
   // Intervals for refresh time
   const refreshTimer = setInterval(async () => {
@@ -107,6 +105,10 @@ async function routeTo(link: string) {
                   <House/>
                   <span>Stations</span>
                 </SidebarMenuButton>
+                <SidebarMenuButton @click="routeTo('/train')">
+                  <TrainFront/>
+                  <span>Train</span>
+                </SidebarMenuButton>
                 <SidebarMenuButton @click="routeTo('/map')">
                   <Map/>
                   <span>Map</span>
@@ -122,6 +124,10 @@ async function routeTo(link: string) {
         <SidebarFooter>
           <SidebarMenu>
             <SidebarMenuItem>
+              <SidebarMenuButton @click="routeTo('/settings')">
+                <Settings/>
+                <span>Settings</span>
+              </SidebarMenuButton>
               <DialogTrigger asChild>
                 <SidebarMenuButton>
                   <Info/>
