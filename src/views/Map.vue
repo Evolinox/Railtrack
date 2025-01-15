@@ -91,10 +91,10 @@ async function refreshFintrafficMarker(map: leaflet.Map, fintrafficMarkers: Map<
         trainMarker.bindPopup(`<b>${train.operatorName} - ${train.trainType} ${train.trainNumber}</b><br>Towards: ${train.endStop}<br>Arriving: ${arrivalTime}<br>Type: ${train.trainCategory}<br>Speed: ${train.speed} km/h`);
       } else {
         // If Marker does not exist, create it
-        const operatorImgUrl = new URL(`../assets/operators/finland/${train.operatorCode}.png`, import.meta.url).href;
-        const hslImgUrl = new URL(`../assets/operators/finland/commuter/${train.commuterLine}.png`, import.meta.url).href;
-        const genericImgUrl = new URL('../assets/operators/finland/generic.png', import.meta.url).href;
-        const genericHslImgUrl = new URL('../assets/operators/finland/commuter/unknown.png', import.meta.url).href;
+        const operatorImgUrl = new URL(`../assets/finland/operators/${train.operatorCode}.webp`, import.meta.url).href;
+        const hslImgUrl = new URL(`../assets/finland/commuters/${train.commuterLine}.webp`, import.meta.url).href;
+        const genericImgUrl = new URL('../assets/generic.webp', import.meta.url).href;
+        const genericHslImgUrl = new URL('../assets/finland/commuters/unknown.webp', import.meta.url).href;
         const validatedImgUrl = await validateImage(operatorImgUrl, genericImgUrl);
         const validatedHslImgUrl = await validateImage(hslImgUrl, genericHslImgUrl);
 
@@ -148,15 +148,12 @@ async function refreshFintrafficMarker(map: leaflet.Map, fintrafficMarkers: Map<
 </script>
 
 <template>
-  <div id="map" v-bind:class="(isDark)?'dark':''"></div>
+  <div id="map" v-bind:class="(isDark)?'dark':''" class="h-full mr-2 mb-2 z-0"></div>
 </template>
 
 <style>
 #map {
-  height: 100%;
-  z-index: 0;
   border-radius: 7px;
-  margin: 0 9px 9px 0;
 }
 
 .operator-train-icon {
