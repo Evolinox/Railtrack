@@ -6,16 +6,20 @@ export interface Train {
     operatorName: string;
     operatorCode: string;
     speed: number;
+    maxSpeed: number;
+    length: number;
     location: [number, number];
     stops: {
         stationCode: string,
         stationName: string,
+        stationType: string,
         arrivalTime: string,
         departureTime: string,
     }[]
     nextStop: string;
     endStop: string;
     arrivalTimeEnd: Date;
+    journeyTime: string;
     composition: {
         vehicleNumber: number,
         vehicleName: string,

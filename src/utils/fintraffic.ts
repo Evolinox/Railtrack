@@ -10,6 +10,7 @@ let removedTrainNumbers: number[] = [];
 // API Endpoints
 const trainLocationsLatestUrl = 'https://rata.digitraffic.fi/api/v1/train-locations/latest/';
 const trainDataUrl = "https://rata.digitraffic.fi/api/v1/trains/latest/";
+const trainCompositionUrl = "https://rata.digitraffic.fi/api/v1/compositions/";
 const stationDataUrl = "https://rata.digitraffic.fi/api/v1/metadata/stations";
 const operatorDataUrl = "https://rata.digitraffic.fi/api/v1/metadata/operators";
 const trafficRestrictionsUrl = "https://rata.digitraffic.fi/api/v1/trackwork-notifications.json?state=ACTIVE";
@@ -173,50 +174,64 @@ async function getTrainData(trainEntry: any): Promise<Train | undefined> {
         trainData = await response.json();
     }
     if (trainData.length > 0) {
-        // Generate stops data
+        // Get all Service Facilities
         let stops = [];
-        for (let i = 0; i < trainData[0].timeTableRows.length; i = i + 2) {
+        for (let i = 0; i <= trainData[0].timeTableRows.length; i = i + 2) {
             if (i == 0) {
                 stops.push({
-                    arrivalTime: "---",
-                    departureTime: trainData[0].timeTableRows[i].scheduledTime,
+                    stationType: "Start",
+                    arrivalTime: "Departure",
+                    departureTime: formatTime(trainData[0].timeTableRows[i].scheduledTime),
                     stationName: fintrafficStore.getStationName(trainData[0].timeTableRows[i].stationShortCode),
                     stationCode: trainData[0].timeTableRows[i].stationShortCode
                 })
-            } else if (i == trainData[0].timeTableRows.length - 1) {
+            } else if (i == trainData[0].timeTableRows.length) {
                 stops.push({
-                    arrivalTime: trainData[0].timeTableRows[i].scheduledTime,
-                    departureTime: "---",
-                    stationName: fintrafficStore.getStationName(trainData[0].timeTableRows[i].stationShortCode),
-                    stationCode: trainData[0].timeTableRows[i].stationShortCode
+                    stationType: "End",
+                    arrivalTime: formatTime(trainData[0].timeTableRows[i-1].scheduledTime),
+                    departureTime: "Arrival",
+                    stationName: fintrafficStore.getStationName(trainData[0].timeTableRows[i-1].stationShortCode),
+                    stationCode: trainData[0].timeTableRows[i-1].stationShortCode
                 })
             } else {
                 stops.push({
-                    arrivalTime: trainData[0].timeTableRows[i-1].scheduledTime,
-                    departureTime: trainData[0].timeTableRows[i].scheduledTime,
+                    stationType: "Stop",
+                    arrivalTime: formatTime(trainData[0].timeTableRows[i-1].scheduledTime),
+                    departureTime: formatTime(trainData[0].timeTableRows[i].scheduledTime),
                     stationName: fintrafficStore.getStationName(trainData[0].timeTableRows[i].stationShortCode),
                     stationCode: trainData[0].timeTableRows[i].stationShortCode
                 })
             }
         }
-        // Generate composition data
-        const composition = [
-            { vehicleNumber: 101, vehicleName: "Engine A" },
-            { vehicleNumber: 102, vehicleName: "Coach B" },
-            { vehicleNumber: 103, vehicleName: "Coach C" }
-        ];
+        // Get Composition of Train
+        const composition = await getTrainComposition(trainEntry.trainNumber);
+
+        // Calculate Journey Time
+        const start: Date = new Date(trainData[0].timeTableRows[0].scheduledTime);
+        const end: Date = new Date(trainData[0].timeTableRows[trainData[0].timeTableRows.length - 1].scheduledTime);
+
+        const differenceInMilliseconds = end.getTime() - start.getTime();
+
+        const totalMinutes = Math.floor(differenceInMilliseconds / (1000 * 60));
+        const hours = Math.floor(totalMinutes / 60);
+        const minutes = totalMinutes % 60;
+
+        const formattedTimeDifference = `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}`;
 
         // Train
         return {
             arrivalTimeEnd: trainData[0].timeTableRows[trainData[0].timeTableRows.length - 1].scheduledTime,
             commuterLine: trainData[0].commuterLineID,
-            composition: composition,
+            composition: composition.vehicles,
+            length: composition.length,
             endStop: fintrafficStore.getStationName(trainData[0].timeTableRows[trainData[0].timeTableRows.length - 1].stationShortCode),
             location: [trainEntry.location.coordinates[1], trainEntry.location.coordinates[0]],
             nextStop: "",
             operatorCode: trainData[0].operatorShortCode,
             operatorName: fintrafficStore.getOperatorName(trainData[0].operatorShortCode),
             speed: trainEntry.speed,
+            maxSpeed: composition.maxSpeed,
+            journeyTime: formattedTimeDifference,
             trainCategory: trainData[0].trainCategory,
             trainNumber: trainEntry.trainNumber,
             trainType: trainData[0].trainType,
@@ -226,3 +241,41 @@ async function getTrainData(trainEntry: any): Promise<Train | undefined> {
         console.log("Train data for " + trainEntry.trainNumber + " is empty");
     }
 }
+
+async function getTrainComposition(trainNumber: number): Promise<any> {
+    const response = await fetch(trainCompositionUrl + "2025-01-16/" + trainNumber, {
+        method: 'GET',
+        headers: {
+            'Digitraffic-User': 'Evolinox/Railtrack'
+        }
+    });
+    let trainComposition;
+    if (!response.ok) {
+        toast({
+            variant: 'destructive',
+            title: 'Uh oh! Something went wrong.',
+            description: 'There was an error fetching composition data for Train No.: ' + trainNumber + '. Code: ' + response.status,
+        });
+    } else {
+        trainComposition = await response.json();
+    }
+    if (trainComposition.trainNumber != undefined) {
+        console.log(trainComposition);
+        return { 
+            vehicles: [{ vehicleNumber: 0, vehicleName: "" }],
+            maxSpeed: trainComposition.journeySections[0].maximumSpeed,
+            length: trainComposition.journeySections[0].totalLength
+        };
+    } else {
+        return { 
+            vehicles: [{ vehicleNumber: 0, vehicleName: "" }],
+            maxSpeed: "n/a",
+            length: "n/a"
+        };
+    }
+}
+
+function formatTime(input: string) {
+    const time = new Date(input);
+    return `${String(time.getHours()).padStart(2, '0')}:${String(time.getMinutes()).padStart(2, '0')}`;
+  }
