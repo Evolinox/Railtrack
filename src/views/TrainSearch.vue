@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { Input } from '@/components/ui/input'
 import { MagnifyingGlassIcon } from '@radix-icons/vue'
-import {computed, ref} from "vue";
+import {ref} from "vue";
 import {refDebounced} from "@vueuse/core";
 import {Button} from "@/components/ui/button";
 import {useRouter} from "vue-router";
@@ -9,16 +9,6 @@ import {useRouter} from "vue-router";
 const router = useRouter();
 const searchedTrainNumber = ref('')
 const debouncedSearch = refDebounced(searchedTrainNumber, 250)
-
-const filteredTrainList = computed(() => {
-  const trainNumberValue = debouncedSearch.value?.trim()
-  if (!trainNumberValue) {
-    console.warn("no trainNumberValue found.")
-  } else {
-    console.log(trainNumberValue)
-  }
-  return trainNumberValue
-})
 
 async function routeToTrainStatus() {
   await router.push("/train/" + debouncedSearch.value?.trim());

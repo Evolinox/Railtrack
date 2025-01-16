@@ -1,13 +1,13 @@
 <script setup lang="ts">
 import * as leaflet from 'leaflet';
-import {onMounted, onUnmounted, watch} from 'vue';
-import {useColorMode, useGeolocation} from "@vueuse/core";
+import {onMounted, onUnmounted} from 'vue';
+import {useColorMode} from "@vueuse/core";
 
 import { getTrainPositions, removeTrain, initializeMetadata, updateTrafficRestrictions } from '@/utils/fintraffic.ts';
 import {Train} from "@/utils/fintraffic.types.ts";
 
 const colorMode = useColorMode();
-const { coords, locatedAt } = useGeolocation()
+//const { coords } = useGeolocation();
 const isDark = colorMode.value === 'dark';
 let map: leaflet.Map;
 

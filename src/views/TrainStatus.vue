@@ -1,20 +1,13 @@
 <script setup lang="ts">
 import * as leaflet from 'leaflet';
 import {ScrollArea, ScrollBar} from "@/components/ui/scroll-area";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from '@/components/ui/card'
+import {Card, CardContent, CardDescription, CardHeader, CardTitle,} from '@/components/ui/card'
 import {onMounted, ref} from "vue";
 import {useColorMode} from "@vueuse/core";
 import {useFintrafficStore} from '../stores/fintraffic.store.ts';
 import {Train} from "@/utils/fintraffic.types.ts";
 // Icons from lucide
-import { CircleAlert } from 'lucide-vue-next';
+import {CircleAlert} from 'lucide-vue-next';
 
 const colorMode = useColorMode();
 const isDark = colorMode.value === 'dark';
@@ -81,7 +74,9 @@ onMounted(async () => {
       className: 'operator-train-icon'
     });
   }
-  leaflet.marker(train?.location, {icon: trainIcon}).addTo(map);
+  if (train?.location) {
+    leaflet.marker(train.location, { icon: trainIcon }).addTo(map);
+  }
 })
 </script>
 
