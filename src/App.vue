@@ -121,7 +121,7 @@ async function routeTo(link: string) {
         <SidebarHeader>
           <SidebarMenuButton size="lg" class="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground" @click="routeTo('/')">
             <Avatar class="h-8 w-8 rounded-lg">
-              <AvatarImage src="/railtrack_without_loco.png" alt="RailtrackLogo" />
+              <AvatarImage src="/railtrack_mobile.png" alt="RailtrackLogo" />
               <AvatarFallback class="rounded-lg">
                 RT
               </AvatarFallback>
