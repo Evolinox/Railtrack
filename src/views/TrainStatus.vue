@@ -117,7 +117,7 @@ onMounted(async () => {
           <CardDescription>All Facilities along the Route of {{ train?.trainType }} {{ train?.trainNumber }}</CardDescription>
         </CardHeader>
         <CardContent>
-          <ScrollArea class="rounded-md h-[328px] w-full">
+          <ScrollArea class="rounded-md h-[360px] w-full">
             <div class="p-0">
               <div v-for="(stop, index) in train?.stops" :key="stop.stationCode" class="items-center w-full">
                 <Separator v-if="index > 0" class="my-2" />
@@ -141,7 +141,7 @@ onMounted(async () => {
 <style>
 .statusContainer {
   grid-template-columns: 1fr 1fr;
-  grid-template-rows: 1fr 1.2fr 1.5fr;
+  grid-template-rows: 1fr 1.1fr 1.5fr;
 }
 .compositionContainer {
   grid-column: 1 / 3;
