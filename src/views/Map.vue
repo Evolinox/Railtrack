@@ -26,9 +26,9 @@ const disruptionMarkers: leaflet.Marker[] = [];
 let map: leaflet.Map;
 let orwTileLayer: leaflet.Layer
 const tileTypes = {
-  standard: "http://tiles.openrailwaymap.org/standard/{z}/{x}/{y}.png",
-  signals: "http://tiles.openrailwaymap.org/signals/{z}/{x}/{y}.png",
-  maxspeed: "http://tiles.openrailwaymap.org/maxspeed/{z}/{x}/{y}.png",
+  standard: "https://tiles.openrailwaymap.org/standard/{z}/{x}/{y}.png",
+  signals: "https://tiles.openrailwaymap.org/signals/{z}/{x}/{y}.png",
+  maxspeed: "https://tiles.openrailwaymap.org/maxspeed/{z}/{x}/{y}.png",
 };
 
 const validateImage = (url: string, placeholder: string): Promise<string> => {
