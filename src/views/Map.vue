@@ -24,6 +24,12 @@ const mapType = ref('standard')
 const showDisruption = ref(false);
 const disruptionMarkers: leaflet.Marker[] = [];
 let map: leaflet.Map;
+let orwTileLayer: leaflet.Layer
+const tileTypes = {
+  standard: "http://tiles.openrailwaymap.org/standard/{z}/{x}/{y}.png",
+  signals: "http://tiles.openrailwaymap.org/signals/{z}/{x}/{y}.png",
+  maxspeed: "http://tiles.openrailwaymap.org/maxspeed/{z}/{x}/{y}.png",
+};
 
 const validateImage = (url: string, placeholder: string): Promise<string> => {
   return new Promise((resolve) => {
@@ -48,15 +54,14 @@ onMounted(async () => {
         maxZoom: 19,
         className: 'map-tiles'
       }).addTo(map);
-  leaflet
-      .tileLayer('http://tiles.openrailwaymap.org/standard/{z}/{x}/{y}.png',
-          {
-            attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap contributors</a>, Style: <a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA 2.0</a> <a href="http://www.openrailwaymap.org/">OpenRailwayMap</a> and OpenStreetMap',
-            minZoom: 2,
-            maxZoom: 19,
-            tileSize: 256
-          }).addTo(map);
 
+  orwTileLayer = leaflet.tileLayer(tileTypes.standard,
+      {
+          attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap contributors</a>, Style: <a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA 2.0</a> <a href="http://www.openrailwaymap.org/">OpenRailwayMap</a> and OpenStreetMap',
+          minZoom: 2,
+          maxZoom: 19,
+          tileSize: 256
+      }).addTo(map);
   // Initialize markers by calling all functions
   // fintraffic/digitraffic
   const fintrafficMarkers = new Map();
@@ -92,6 +97,43 @@ watch(() => coords.value, async() => {
   map.setView([coords.value.latitude, coords.value.longitude], 12);
 })
 */
+
+// Watch mapType and handle a change event
+watch(mapType, async (type, newType) => {
+  console.log('mapType changed from', type, 'to', newType);
+  switch (type) {
+    case 'standard':
+      map.removeLayer(orwTileLayer);
+      orwTileLayer = leaflet.tileLayer(tileTypes.standard,
+          {
+            attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap contributors</a>, Style: <a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA 2.0</a> <a href="http://www.openrailwaymap.org/">OpenRailwayMap</a> and OpenStreetMap',
+            minZoom: 2,
+            maxZoom: 19,
+            tileSize: 256
+          }).addTo(map);
+      break;
+    case 'signals':
+      map.removeLayer(orwTileLayer);
+      orwTileLayer = leaflet.tileLayer(tileTypes.signals,
+          {
+            attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap contributors</a>, Style: <a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA 2.0</a> <a href="http://www.openrailwaymap.org/">OpenRailwayMap</a> and OpenStreetMap',
+            minZoom: 2,
+            maxZoom: 19,
+            tileSize: 256
+          }).addTo(map);
+      break;
+    case 'maxspeed':
+      map.removeLayer(orwTileLayer);
+      orwTileLayer = leaflet.tileLayer(tileTypes.maxspeed,
+          {
+            attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap contributors</a>, Style: <a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA 2.0</a> <a href="http://www.openrailwaymap.org/">OpenRailwayMap</a> and OpenStreetMap',
+            minZoom: 2,
+            maxZoom: 19,
+            tileSize: 256
+          }).addTo(map);
+      break;
+  }
+})
 
 // Watch showDisruption and handle a change event
 watch(showDisruption, async (show, isShown) => {
