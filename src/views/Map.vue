@@ -29,6 +29,8 @@ const tileTypes = {
   standard: "https://tiles.openrailwaymap.org/standard/{z}/{x}/{y}.png",
   signals: "https://tiles.openrailwaymap.org/signals/{z}/{x}/{y}.png",
   maxspeed: "https://tiles.openrailwaymap.org/maxspeed/{z}/{x}/{y}.png",
+  electrification: "https://tiles.openrailwaymap.org/electrified/{z}/{x}/{y}.png",
+  gauge: "https://tiles.openrailwaymap.org/gauge/{z}/{x}/{y}.png",
 };
 
 const validateImage = (url: string, placeholder: string): Promise<string> => {
@@ -125,6 +127,26 @@ watch(mapType, async (type, newType) => {
     case 'maxspeed':
       map.removeLayer(orwTileLayer);
       orwTileLayer = leaflet.tileLayer(tileTypes.maxspeed,
+          {
+            attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap contributors</a>, Style: <a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA 2.0</a> <a href="http://www.openrailwaymap.org/">OpenRailwayMap</a> and OpenStreetMap',
+            minZoom: 2,
+            maxZoom: 19,
+            tileSize: 256
+          }).addTo(map);
+      break;
+    case 'electrification':
+      map.removeLayer(orwTileLayer);
+      orwTileLayer = leaflet.tileLayer(tileTypes.electrification,
+          {
+            attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap contributors</a>, Style: <a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA 2.0</a> <a href="http://www.openrailwaymap.org/">OpenRailwayMap</a> and OpenStreetMap',
+            minZoom: 2,
+            maxZoom: 19,
+            tileSize: 256
+          }).addTo(map);
+      break;
+    case 'gauge':
+      map.removeLayer(orwTileLayer);
+      orwTileLayer = leaflet.tileLayer(tileTypes.gauge,
           {
             attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap contributors</a>, Style: <a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA 2.0</a> <a href="http://www.openrailwaymap.org/">OpenRailwayMap</a> and OpenStreetMap',
             minZoom: 2,
@@ -256,6 +278,12 @@ async function refreshFintrafficMarker(map: leaflet.Map, fintrafficMarkers: Map<
         </ContextMenuRadioItem>
         <ContextMenuRadioItem value="maxspeed">
           Speed
+        </ContextMenuRadioItem>
+        <ContextMenuRadioItem value="electrification">
+          Electrification
+        </ContextMenuRadioItem>
+        <ContextMenuRadioItem value="gauge">
+          Gauge
         </ContextMenuRadioItem>
       </ContextMenuRadioGroup>
       <ContextMenuLabel>
