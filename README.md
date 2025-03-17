@@ -25,6 +25,9 @@ Setup is easy, just follow these Steps:
 - run `pnpm install`
 - when finished, run `pnpm tauri dev` and the app will start
 
+> [!IMPORTANT]
+> For Railtrack to work, you need to have Tauri installed on your machine. If you haven't installed tauri, go here: https://v2.tauri.app/start/prerequisites/
+
 ## Contributing
 
 Contributions are welcome! If you want to add features, improve the code, or fix bugs, feel free to fork the repository and submit a pull request.
