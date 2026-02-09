@@ -1,0 +1,21 @@
+{
+  "name": "railtrack",
+  "private": true,
+  "version": "0.0.1",
+  "packageManager": "pnpm@10.13.1",
+  "workspaces": [
+    "packages/*"
+  ],
+  "scripts": {
+    "docs:install": "pnpm --filter docs install",
+    "docs:dev": "pnpm --filter docs docs:dev",
+    "docs:build": "pnpm --filter docs docs:build",
+    "docs:preview": "pnpm --filter docs docs:preview",
+    "railis:install": "pnpm --filter railis install",
+    "railis:start": "pnpm --filter railis start",
+    "railis:dev": "pnpm --filter railis dev"
+  },
+  "devDependencies": {
+    "vitepress": "2.0.0-alpha.16"
+  }
+}

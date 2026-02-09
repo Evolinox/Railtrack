@@ -1,0 +1,80 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model Train {
+  id                Int      @id
+  countryCode       String
+  trainName         String
+  trainOperator     String
+  trainOperatorCode String
+  trainCategory     String
+  commuterLine      String
+  latitude          Float
+  longitude         Float
+  speed             Int
+  timestamp         DateTime @default(now())
+  dataSource        String?
+
+  departureStationId   Int?
+  destinationStationId Int?
+
+  departureScheduledTime   DateTime?
+  departureActualTime      DateTime?
+  destinationScheduledTime DateTime?
+  destinationActualTime    DateTime?
+
+  departureStation   Station?    @relation("DepartureStation", fields: [departureStationId], references: [id], onDelete: SetNull)
+  destinationStation Station?    @relation("DestinationStation", fields: [destinationStationId], references: [id], onDelete: SetNull)
+  stops              TrainStop[]
+}
+
+model TrainStop {
+  id        Int @id @default(autoincrement())
+  trainId   Int
+  stationId Int
+
+  type                String
+  commercialStop      Boolean
+  trainStopping       Boolean
+  cancelled           Boolean
+  scheduledTime       DateTime?
+  actualTime          DateTime?
+  differenceInMinutes Int?
+  commercialTrack     String?
+  stopOrder           Int
+
+  train   Train   @relation(fields: [trainId], references: [id], onDelete: Cascade)
+  station Station @relation(fields: [stationId], references: [id], onDelete: Cascade)
+}
+
+model Station {
+  id          Int    @id @default(autoincrement())
+  stationCode String @unique
+  stationName String
+  latitude    Float
+  longitude   Float
+
+  trainStopsAsStop           TrainStop[]
+  trainsAsDepartureStation   Train[]     @relation("DepartureStation")
+  trainsAsDestinationStation Train[]     @relation("DestinationStation")
+}
+
+model TrafficRestriction {
+  id          Int    @id @default(autoincrement())
+  name        String
+  description String
+  latitude    Float
+  longitude   Float
+}
