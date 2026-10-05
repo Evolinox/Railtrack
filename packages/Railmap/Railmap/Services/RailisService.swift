@@ -9,11 +9,11 @@ import Foundation
 
 class RailisService {
     func fetchLiveTrains() async throws -> [Train] {
-        let url = URL(string: "http://192.168.178.23:3000/v1/traffic/trains")!
+        let url = URL(string: "http://192.168.178.22:3000/v1/traffic/trains")!
         
         var request = URLRequest(url: url)
         request.httpMethod = "GET"
-        let bearerToken = "lalilu"
+        let bearerToken = "railisClient"
         request.setValue("Bearer \(bearerToken)", forHTTPHeaderField: "Authorization")
         
         let (data, response) = try await URLSession.shared.data(for: request)
@@ -34,7 +34,7 @@ class RailisService {
         
         var request = URLRequest(url: url)
         request.httpMethod = "GET"
-        let bearerToken = "lalilu"
+        let bearerToken = "railisClient"
         request.setValue("Bearer \(bearerToken)", forHTTPHeaderField: "Authorization")
         
         let (data, response) = try await URLSession.shared.data(for: request)

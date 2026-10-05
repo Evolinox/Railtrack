@@ -17,7 +17,7 @@
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "505FEA0A2E81B522003832EA"
                BuildableName = "Railmap.app"
-               ReferencedContainer = "container:RailMap.xcodeproj">
+               ReferencedContainer = "container:Railmap.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
       </BuildActionEntries>
@@ -30,7 +30,7 @@
       shouldAutocreateTestPlan = "YES">
    </TestAction>
    <LaunchAction
-      buildConfiguration = "Debug"
+      buildConfiguration = "Release"
       selectedDebuggerIdentifier = "Xcode.DebuggerFoundation.Debugger.LLDB"
       selectedLauncherIdentifier = "Xcode.DebuggerFoundation.Launcher.LLDB"
       launchStyle = "0"
@@ -46,7 +46,7 @@
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "505FEA0A2E81B522003832EA"
             BuildableName = "Railmap.app"
-            ReferencedContainer = "container:RailMap.xcodeproj">
+            ReferencedContainer = "container:Railmap.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
    </LaunchAction>
@@ -62,7 +62,7 @@
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "505FEA0A2E81B522003832EA"
             BuildableName = "Railmap.app"
-            ReferencedContainer = "container:RailMap.xcodeproj">
+            ReferencedContainer = "container:Railmap.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
    </ProfileAction>
