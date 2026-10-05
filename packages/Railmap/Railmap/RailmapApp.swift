@@ -1,6 +1,6 @@
 //
-//  RataApp.swift
-//  Rata
+//  RailmapApp.swift
+//  Railmap
 //
 //  Created by Pascal Jedicke on 22.09.25.
 //
@@ -8,7 +8,7 @@
 import SwiftUI
 
 @main
-struct RataApp: App {
+struct RailmapApp: App {
     @State private var modelData = ModelData()
     
     var body: some Scene {

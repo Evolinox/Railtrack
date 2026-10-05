@@ -44,7 +44,7 @@
 		5026C7D52E8A74110070CB49 /* WidgetKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = WidgetKit.framework; path = System/Library/Frameworks/WidgetKit.framework; sourceTree = SDKROOT; };
 		5026C7D72E8A74120070CB49 /* SwiftUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SwiftUI.framework; path = System/Library/Frameworks/SwiftUI.framework; sourceTree = SDKROOT; };
 		5026C7F12E8A74760070CB49 /* LiveTrackingAttributes.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LiveTrackingAttributes.swift; sourceTree = "<group>"; };
-		505FEA0B2E81B522003832EA /* Rata.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Rata.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		505FEA0B2E81B522003832EA /* Railmap.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Railmap.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		505FEA802E81B752003832EA /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -56,12 +56,12 @@
 			);
 			target = 5026C7D22E8A74110070CB49 /* LiveTrackingActivityExtension */;
 		};
-		5050F2582E94083800C7885A /* Exceptions for "Rata" folder in "Rata" target */ = {
+		5050F2582E94083800C7885A /* Exceptions for "Railmap" folder in "Railmap" target */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
 				Info.plist,
 			);
-			target = 505FEA0A2E81B522003832EA /* Rata */;
+			target = 505FEA0A2E81B522003832EA /* Railmap */;
 		};
 /* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
 
@@ -74,12 +74,12 @@
 			path = LiveTrackingActivity;
 			sourceTree = "<group>";
 		};
-		505FEA0D2E81B522003832EA /* Rata */ = {
+		505FEA0D2E81B522003832EA /* Railmap */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
 			exceptions = (
-				5050F2582E94083800C7885A /* Exceptions for "Rata" folder in "Rata" target */,
+				5050F2582E94083800C7885A /* Exceptions for "Railmap" folder in "Railmap" target */,
 			);
-			path = Rata;
+			path = Railmap;
 			sourceTree = "<group>";
 		};
 /* End PBXFileSystemSynchronizedRootGroup section */
@@ -125,7 +125,7 @@
 			isa = PBXGroup;
 			children = (
 				505FEA802E81B752003832EA /* README.md */,
-				505FEA0D2E81B522003832EA /* Rata */,
+				505FEA0D2E81B522003832EA /* Railmap */,
 				5026C7D92E8A74120070CB49 /* LiveTrackingActivity */,
 				5026C7F02E8A74700070CB49 /* Shared */,
 				5026C7D42E8A74110070CB49 /* Frameworks */,
@@ -136,7 +136,7 @@
 		505FEA0C2E81B522003832EA /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				505FEA0B2E81B522003832EA /* Rata.app */,
+				505FEA0B2E81B522003832EA /* Railmap.app */,
 				5026C7D32E8A74110070CB49 /* LiveTrackingActivityExtension.appex */,
 			);
 			name = Products;
@@ -167,9 +167,9 @@
 			productReference = 5026C7D32E8A74110070CB49 /* LiveTrackingActivityExtension.appex */;
 			productType = "com.apple.product-type.app-extension";
 		};
-		505FEA0A2E81B522003832EA /* Rata */ = {
+		505FEA0A2E81B522003832EA /* Railmap */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 505FEA162E81B523003832EA /* Build configuration list for PBXNativeTarget "Rata" */;
+			buildConfigurationList = 505FEA162E81B523003832EA /* Build configuration list for PBXNativeTarget "Railmap" */;
 			buildPhases = (
 				505FEA072E81B522003832EA /* Sources */,
 				505FEA082E81B522003832EA /* Frameworks */,
@@ -182,13 +182,13 @@
 				5026C7E82E8A74120070CB49 /* PBXTargetDependency */,
 			);
 			fileSystemSynchronizedGroups = (
-				505FEA0D2E81B522003832EA /* Rata */,
+				505FEA0D2E81B522003832EA /* Railmap */,
 			);
-			name = Rata;
+			name = Railmap;
 			packageProductDependencies = (
 			);
 			productName = Rata;
-			productReference = 505FEA0B2E81B522003832EA /* Rata.app */;
+			productReference = 505FEA0B2E81B522003832EA /* Railmap.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
@@ -209,7 +209,7 @@
 					};
 				};
 			};
-			buildConfigurationList = 505FEA062E81B522003832EA /* Build configuration list for PBXProject "Rata" */;
+			buildConfigurationList = 505FEA062E81B522003832EA /* Build configuration list for PBXProject "Railmap" */;
 			developmentRegion = en;
 			hasScannedForEncodings = 0;
 			knownRegions = (
@@ -224,7 +224,7 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				505FEA0A2E81B522003832EA /* Rata */,
+				505FEA0A2E81B522003832EA /* Railmap */,
 				5026C7D22E8A74110070CB49 /* LiveTrackingActivityExtension */,
 			);
 		};
@@ -294,7 +294,7 @@
 					"@executable_path/../../Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.evolinox.Rata.LiveTrackingActivity;
+				PRODUCT_BUNDLE_IDENTIFIER = com.evolinox.Railmap.LiveTrackingActivity;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
 				STRING_CATALOG_GENERATE_SYMBOLS = YES;
@@ -324,7 +324,7 @@
 					"@executable_path/../../Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.evolinox.Rata.LiveTrackingActivity;
+				PRODUCT_BUNDLE_IDENTIFIER = com.evolinox.Railmap.LiveTrackingActivity;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
 				STRING_CATALOG_GENERATE_SYMBOLS = YES;
@@ -462,7 +462,7 @@
 		505FEA172E81B523003832EA /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ASSETCATALOG_COMPILER_APPICON_NAME = RataIcon;
+				ASSETCATALOG_COMPILER_APPICON_NAME = RailmapIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				ASSETCATALOG_COMPILER_INCLUDE_ALL_APPICON_ASSETS = YES;
 				CODE_SIGN_STYLE = Automatic;
@@ -470,8 +470,8 @@
 				DEVELOPMENT_TEAM = 4W3ZRGZ29K;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_FILE = Rata/Info.plist;
-				INFOPLIST_KEY_CFBundleDisplayName = Railtrack;
+				INFOPLIST_FILE = Railmap/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = Railmap;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.navigation";
 				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "Access needed to display your Location on Map";
 				INFOPLIST_KEY_NSSupportsLiveActivities = YES;
@@ -481,12 +481,13 @@
 				INFOPLIST_KEY_UIStatusBarHidden = YES;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown";
+				IPHONEOS_DEPLOYMENT_TARGET = 26.6;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.evolinox.Rata;
+				PRODUCT_BUNDLE_IDENTIFIER = com.evolinox.Railmap;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				STRING_CATALOG_GENERATE_SYMBOLS = YES;
 				SWIFT_APPROACHABLE_CONCURRENCY = YES;
@@ -501,7 +502,7 @@
 		505FEA182E81B523003832EA /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ASSETCATALOG_COMPILER_APPICON_NAME = RataIcon;
+				ASSETCATALOG_COMPILER_APPICON_NAME = RailmapIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				ASSETCATALOG_COMPILER_INCLUDE_ALL_APPICON_ASSETS = YES;
 				CODE_SIGN_STYLE = Automatic;
@@ -509,8 +510,8 @@
 				DEVELOPMENT_TEAM = 4W3ZRGZ29K;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_FILE = Rata/Info.plist;
-				INFOPLIST_KEY_CFBundleDisplayName = Railtrack;
+				INFOPLIST_FILE = Railmap/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = Railmap;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.navigation";
 				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "Access needed to display your Location on Map";
 				INFOPLIST_KEY_NSSupportsLiveActivities = YES;
@@ -520,12 +521,13 @@
 				INFOPLIST_KEY_UIStatusBarHidden = YES;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown";
+				IPHONEOS_DEPLOYMENT_TARGET = 26.6;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.evolinox.Rata;
+				PRODUCT_BUNDLE_IDENTIFIER = com.evolinox.Railmap;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				STRING_CATALOG_GENERATE_SYMBOLS = YES;
 				SWIFT_APPROACHABLE_CONCURRENCY = YES;
@@ -549,7 +551,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		505FEA062E81B522003832EA /* Build configuration list for PBXProject "Rata" */ = {
+		505FEA062E81B522003832EA /* Build configuration list for PBXProject "Railmap" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				505FEA142E81B523003832EA /* Debug */,
@@ -558,7 +560,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		505FEA162E81B523003832EA /* Build configuration list for PBXNativeTarget "Rata" */ = {
+		505FEA162E81B523003832EA /* Build configuration list for PBXNativeTarget "Railmap" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				505FEA172E81B523003832EA /* Debug */,

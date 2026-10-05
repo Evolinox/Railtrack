@@ -19,7 +19,7 @@
                BlueprintIdentifier = "5026C7D22E8A74110070CB49"
                BuildableName = "LiveTrackingActivityExtension.appex"
                BlueprintName = "LiveTrackingActivityExtension"
-               ReferencedContainer = "container:Rata.xcodeproj">
+               ReferencedContainer = "container:RailMap.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
          <BuildActionEntry
@@ -31,9 +31,9 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "505FEA0A2E81B522003832EA"
-               BuildableName = "Rata.app"
-               BlueprintName = "Rata"
-               ReferencedContainer = "container:Rata.xcodeproj">
+               BuildableName = "Railmap.app"
+               BlueprintName = "Railmap"
+               ReferencedContainer = "container:RailMap.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
       </BuildActionEntries>
@@ -62,9 +62,9 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "505FEA0A2E81B522003832EA"
-            BuildableName = "Rata.app"
-            BlueprintName = "Rata"
-            ReferencedContainer = "container:Rata.xcodeproj">
+            BuildableName = "Railmap.app"
+            BlueprintName = "Railmap"
+            ReferencedContainer = "container:RailMap.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
       <EnvironmentVariables>
@@ -98,9 +98,9 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "505FEA0A2E81B522003832EA"
-            BuildableName = "Rata.app"
-            BlueprintName = "Rata"
-            ReferencedContainer = "container:Rata.xcodeproj">
+            BuildableName = "Railmap.app"
+            BlueprintName = "Railmap"
+            ReferencedContainer = "container:RailMap.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
    </ProfileAction>
