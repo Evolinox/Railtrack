@@ -8,13 +8,27 @@
 import Foundation
 
 class RailisService {
+    enum Config {
+        static var railisBearerToken: String {
+            guard let token = Bundle.main.infoDictionary?["RailisBearerToken"] as? String else {
+                fatalError("Bearer token missing in Info.plist")
+            }
+            return token
+        }
+        static var railisUrlBase: String {
+            guard let url = Bundle.main.infoDictionary?["RailisUrlBase"] as? String else {
+                fatalError("Base URL missing in Info.plist")
+            }
+            return url
+        }
+    }
+    
     func fetchLiveTrains() async throws -> [Train] {
-        let url = URL(string: "http://192.168.178.22:3000/v1/traffic/trains")!
+        let url = URL(string: "\(Config.railisUrlBase)/v1/traffic/trains")!
         
         var request = URLRequest(url: url)
         request.httpMethod = "GET"
-        let bearerToken = "railisClient"
-        request.setValue("Bearer \(bearerToken)", forHTTPHeaderField: "Authorization")
+        request.setValue("Bearer \(Config.railisBearerToken)", forHTTPHeaderField: "Authorization")
         
         let (data, response) = try await URLSession.shared.data(for: request)
         
@@ -30,12 +44,11 @@ class RailisService {
 
     
     func fetchUpdatedTrainDetails(id: Int) async throws -> Train {
-        let url = URL(string: "http://192.168.178.23:3000/v1/traffic/trains/\(id)")!
+        let url = URL(string: "\(Config.railisUrlBase)/v1/traffic/trains/\(id)")!
         
         var request = URLRequest(url: url)
         request.httpMethod = "GET"
-        let bearerToken = "railisClient"
-        request.setValue("Bearer \(bearerToken)", forHTTPHeaderField: "Authorization")
+        request.setValue("Bearer \(Config.railisBearerToken)", forHTTPHeaderField: "Authorization")
         
         let (data, response) = try await URLSession.shared.data(for: request)
         
