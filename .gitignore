@@ -37,3 +37,15 @@ playwright-report/
 vite.config.ts.timestamp*
 */.vitepress/cache
 .eslintcache
+
+# Xcode User Data
+xcuserdata/
+*.xcuserdata
+*.xcuserstate
+
+# Railmap specific
+packages/Railmap/Railmap/Resources/Config.xcconfig
+packages/Railmap/Railmap.xcodeproj/project.xcworkspace/xcuserdata/pascal.xcuserdatad/UserInterfaceState.xcuserstate
+
+# Railis specific
+packages/Railis/prisma/dev.db
