@@ -2,7 +2,14 @@
   "sourceLanguage" : "en",
   "strings" : {
     "%.1f km/h" : {
-
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%.1f km/h"
+          }
+        }
+      }
     },
     "%@ from %@ to %@" : {
       "extractionState" : "manual",
@@ -253,6 +260,23 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Show Trains"
+          }
+        }
+      }
+    },
+    "ToggleStations" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bahnhöfe anzeigen"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Show Stations"
           }
         }
       }

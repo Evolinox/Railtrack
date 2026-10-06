@@ -23,6 +23,7 @@ class ModelData {
     var showLayerSheet = false
     var showSettingsSheet = false
     var enableLiveTrains = true
+    var enableStations = false
     var enableConstruction = false
     var position: MapCameraPosition = .userLocation(fallback: .automatic)
     var isCenteredOnUser = false

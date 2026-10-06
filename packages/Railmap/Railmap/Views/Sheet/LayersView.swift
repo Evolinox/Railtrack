@@ -109,6 +109,13 @@ struct LayersView: View {
                 }
                 Divider()
                 HStack {
+                    Text("ToggleStations")
+                    Spacer()
+                    Toggle("ToggleStations", isOn: $modelData.enableStations)
+                        .labelsHidden()
+                }
+                Divider()
+                HStack {
                     Text("ToggleConstruction")
                     Spacer()
                     Toggle("ToggleConstruction", isOn: $modelData.enableConstruction)
@@ -118,13 +125,14 @@ struct LayersView: View {
             .padding()
             .background(Color(.systemGray5))
             .cornerRadius(22)
-            Spacer()
             Text("OpenRailwayMapCopyright")
                 .font(.system(size: 10))
                 .fontWeight(.light)
+                .foregroundColor(.secondary)
                 .ignoresSafeArea(.all)
+                .offset(y: 8)
         }
-        .padding()
+        .padding([.top, .horizontal])
     }
 }
 
